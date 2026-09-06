@@ -3,6 +3,7 @@
 ## Source and ownership
 
 - Each `skills/<name>/SKILL.md` is the authoritative entrypoint for that skill.
+- `.agents/skills/create-issue/` is a repository-discovery mirror of `skills/create-issue/`; keep its tracked files byte-for-byte synchronized with the authoritative package.
 - Supporting references, scripts, and eval definitions belong to their owning skill and should remain linked from its entrypoint or evaluation workflow.
 - Root `README.md`, `scripts/validate_skills.py`, and CI are derived packaging and verification files; keep them synchronized with the five skill directories.
 

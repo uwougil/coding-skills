@@ -19,6 +19,7 @@ EXPECTED_SKILLS = {
     "review-repo",
     "create-issue",
 }
+MIRRORED_SKILLS = {"create-issue"}
 REQUIRED_UI_KEYS = ("display_name", "short_description", "default_prompt")
 LOCAL_PATH_RE = re.compile(r"(?:(?<![A-Za-z0-9])[A-Za-z]:[\\/]|/(?:Users|home)/)")
 
@@ -95,6 +96,33 @@ def validate() -> list[str]:
                 json.loads(text)
             except json.JSONDecodeError as exc:
                 errors.append(f"invalid JSON in {path.relative_to(ROOT)}: {exc}")
+
+    # Repo-local discovery uses .agents/skills, while skills/ remains the
+    # portable package location. Keep the discovery mirror exact and obvious.
+    for name in sorted(MIRRORED_SKILLS):
+        source = SKILLS_DIR / name
+        mirror = ROOT / ".agents" / "skills" / name
+        if not mirror.is_dir():
+            errors.append(f"{name}: missing repository discovery mirror at {mirror.relative_to(ROOT)}")
+            continue
+        source_files = {
+            path.relative_to(source)
+            for path in source.rglob("*")
+            if path.is_file() and "__pycache__" not in path.parts
+        }
+        mirror_files = {
+            path.relative_to(mirror)
+            for path in mirror.rglob("*")
+            if path.is_file() and "__pycache__" not in path.parts
+        }
+        if source_files != mirror_files:
+            errors.append(f"{name}: discovery mirror file set differs from skills/{name}")
+            continue
+        for relative in sorted(source_files):
+            source_text = (source / relative).read_bytes()
+            mirror_text = (mirror / relative).read_bytes()
+            if source_text != mirror_text:
+                errors.append(f"{name}: discovery mirror differs at .agents/skills/{name}/{relative}")
     return errors
 
 

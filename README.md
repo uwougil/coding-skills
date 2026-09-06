@@ -20,6 +20,8 @@ skills/<skill-name>/  ->  ~/.agents/skills/<skill-name>/
 
 在 Codex 中可使用 `$skill-name` 调用，例如 `$review-repo`。每个 skill 的 `SKILL.md` 是入口；`references/`、`scripts/` 和 `evals/` 是按需使用的配套资源。
 
+本仓库还为 `create-issue` 提供仓库级自动发现入口：`.agents/skills/create-issue/` 是 `skills/create-issue/` 的同步镜像。将 Codex 的工作目录设为本仓库根目录（或其子目录）后，重启 Codex 即可直接使用 `$create-issue`；也可以继续按上面的方式复制独立 skill 包。
+
 ## 本地验证
 
 本仓库只依赖 Python 标准库：

@@ -1,0 +1,16 @@
+{
+  "skill": "create-issue",
+  "cases": [
+    "simple-feature",
+    "enhancement",
+    "bug",
+    "duplicate",
+    "multiple-work-items",
+    "prd-conflict",
+    "edd-conflict",
+    "rejected-ai-suggestion",
+    "avoid-over-splitting",
+    "no-coding"
+  ],
+  "side_effect_policy": "Use a fixture repository or mocked gh for evaluation; never create live Issues as part of a dry-run."
+}

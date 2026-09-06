@@ -1,0 +1,6 @@
+interface:
+  display_name: "Create Issue"
+  short_description: "Compile settled intent into a concise GitHub Issue"
+  default_prompt: "Use $create-issue to inspect this repository and materialize the settled conversation intent as a verified GitHub Issue."
+policy:
+  allow_implicit_invocation: true
