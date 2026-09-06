@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the portable four-skill repository package."""
+"""Validate the portable skill repository package."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ EXPECTED_SKILLS = {
     "implement-milestone",
     "fix-bug",
     "review-repo",
+    "create-issue",
 }
 REQUIRED_UI_KEYS = ("display_name", "short_description", "default_prompt")
 LOCAL_PATH_RE = re.compile(r"(?:(?<![A-Za-z0-9])[A-Za-z]:[\\/]|/(?:Users|home)/)")

@@ -20,3 +20,5 @@ jobs:
       - run: python skills/implement-milestone/scripts/tests/test_contract_snapshot.py
       - run: python skills/fix-bug/scripts/capture_repro.py --help
       - run: python skills/review-repo/scripts/repo_inventory.py --help
+      - run: python skills/create-issue/scripts/gh_issue.py --help
+      - run: python skills/create-issue/scripts/test_gh_issue.py

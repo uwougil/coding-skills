@@ -12,7 +12,9 @@ scripts/
 evals/
 ```
 
-The four packages are intentionally independent: they may be installed separately and must not import one another at runtime. The root contains only collection documentation, validation, ignore rules, and CI.
+The five packages are intentionally independent: they may be installed separately and must not import one another at runtime. The root contains only collection documentation, validation, ignore rules, and CI.
+
+`create-issue` may invoke an already authenticated `gh` CLI session through its stdlib-only wrapper. It must fail closed when repository identity or authentication is unavailable and must never store credentials.
 
 ## Source fidelity
 
