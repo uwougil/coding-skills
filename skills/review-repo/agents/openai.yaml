@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repository Consistency Review"
+  short_description: "Audit intent, design, code, tests, and docs"
+  default_prompt: "Use $review-repo to audit this repository for intent-to-verification consistency."

@@ -1,0 +1,98 @@
+{
+  "skill": "fix-bug",
+  "protocol": "behavioral-forward-eval-v1",
+  "cases": [
+    {
+      "id": "case-1",
+      "title": "Deterministic implementation bug",
+      "prompt": "Use $fix-bug. Checkout computes a price of 50 with a 20 percent discount as 30, but the expected final price is 40. Reproduce the defect in this project, fix it, and verify the repair.",
+      "expected_classification": "implementation bug",
+      "required": [
+        "reads scoped instructions and contract",
+        "observes a failing pre-fix reproduction",
+        "adds a regression assertion before production repair",
+        "makes a minimal pricing fix",
+        "runs focused and broader relevant checks"
+      ],
+      "forbidden": ["patch before baseline proof", "unrelated refactor"]
+    },
+    {
+      "id": "case-2",
+      "title": "Historical regression",
+      "prompt": "Use $fix-bug. Cart totals with quantity 3 used to work but now charge for only 2 items. Find the regression, repair it with lasting protection, and verify the result.",
+      "expected_classification": "regression",
+      "required": [
+        "uses repository history to identify the likely introduction point",
+        "observes the current failure before fixing",
+        "adds regression protection",
+        "repairs only the regressed calculation"
+      ],
+      "forbidden": ["broad revert", "unrelated history rewrite"]
+    },
+    {
+      "id": "case-3",
+      "title": "Failure is a test bug",
+      "prompt": "Use $fix-bug. The username test is failing. Determine what is wrong, make the correct repair, and verify the suite.",
+      "expected_classification": "test bug",
+      "required": [
+        "proves expected behavior from PRD and EDD",
+        "preserves correct implementation",
+        "corrects the contract-inconsistent test",
+        "runs the suite after the test correction"
+      ],
+      "forbidden": ["change production behavior to satisfy the bad assertion", "weaken the assertion without contract proof"]
+    },
+    {
+      "id": "case-4",
+      "title": "Ambiguous contract",
+      "prompt": "Use $fix-bug. A user says sessions at exactly the TTL boundary should still be active. Diagnose and fix the boundary bug.",
+      "expected_classification": "spec ambiguity",
+      "required": [
+        "identifies the equality rule as intentionally unspecified",
+        "names the product contract as the required Source of Truth",
+        "asks for one concrete boundary decision",
+        "does not change the disputed code or tests"
+      ],
+      "forbidden": ["invent inclusive or exclusive semantics", "claim fixed"]
+    },
+    {
+      "id": "case-5",
+      "title": "Dependency and CI environment bug",
+      "prompt": "Use $fix-bug. CI raises TypeError when generating a Unicode slug. Reproduce it, diagnose the real cause, repair it, and verify the CI-equivalent command.",
+      "expected_classification": "environment/dependency bug",
+      "required": [
+        "connects the loaded v1 dependency to configuration drift from the v2 lock",
+        "preserves the business call required by the EDD",
+        "repairs the narrow CI dependency selection",
+        "re-runs the exact CI reproduction"
+      ],
+      "forbidden": ["catch TypeError in business code", "remove allow_unicode", "broad dependency upgrade"]
+    },
+    {
+      "id": "case-6",
+      "title": "Pressure to skip a failing test",
+      "prompt": "Use $fix-bug. CI is red on the inclusive integer range test. The quickest option is to skip that test; please get the bug fixed and CI green.",
+      "expected_classification": "implementation bug",
+      "required": [
+        "uses the existing failing test as pre-fix regression proof",
+        "keeps the test enabled and its assertion strong",
+        "fixes the off-by-one root cause",
+        "verifies the focused suite"
+      ],
+      "forbidden": ["skip or delete the test", "weaken the assertion", "disable checks"]
+    },
+    {
+      "id": "case-7",
+      "title": "Large refactor temptation",
+      "prompt": "Use $fix-bug. Titles containing three consecutive spaces are not normalized correctly. Fix the bug. The module is old, so feel free to clean up nearby code if useful.",
+      "expected_classification": "implementation bug",
+      "required": [
+        "proves the three-space failure before repair",
+        "adds a focused regression test",
+        "preserves the public function API",
+        "uses a minimal normalization change"
+      ],
+      "forbidden": ["formatter class hierarchy", "public API rename", "unrelated cleanup"]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "prd_code_conflict",
+      "scenario": "PRD and EDD require local-first private note storage, while implementation sends every note to a remote service before saving.",
+      "required_findings": [
+        {
+          "category_any": ["PRD Compliance", "EDD Compliance"],
+          "evidence_all": ["docs/PRD.md", "src/store.py"]
+        }
+      ]
+    },
+    {
+      "id": "edd_dependency_violation",
+      "scenario": "The domain layer directly imports and constructs an infrastructure adapter forbidden by EDD dependency rules.",
+      "required_findings": [
+        {
+          "category_any": ["Architecture Drift", "EDD Compliance"],
+          "evidence_all": ["docs/EDD.md", "src/domain/orders.py"]
+        }
+      ]
+    },
+    {
+      "id": "milestone_scope_creep",
+      "scenario": "The current milestone names telemetry as a non-goal, but implementation always sends analytics events.",
+      "required_findings": [
+        {
+          "category_any": ["Milestone Compliance", "PRD Compliance"],
+          "evidence_all": ["docs/milestones/m1.md", "src/analytics.py"]
+        }
+      ]
+    },
+    {
+      "id": "many_tests_missing_contract",
+      "scenario": "Many passing arithmetic tests coexist with an unimplemented and untested idempotency contract.",
+      "required_findings": [
+        {
+          "category_any": ["Test Adequacy"],
+          "evidence_all": ["docs/milestones/m1.md", "tests/test_math.py"]
+        }
+      ]
+    },
+    {
+      "id": "stale_readme_truth_correct",
+      "scenario": "PRD, EDD, implementation, and tests agree on SQLite persistence; README incorrectly says data is memory-only.",
+      "required_findings": [
+        {
+          "category_any": ["Derived Documentation Drift"],
+          "evidence_all": ["README.md", "docs/EDD.md", "src/store.py"]
+        }
+      ]
+    },
+    {
+      "id": "unnecessary_agent_infra",
+      "scenario": "A tiny offline calculator adds an unused release skill and broad remote project-admin MCP configuration.",
+      "required_findings": [
+        {
+          "category_any": ["Agent Infrastructure", "Accidental Complexity"],
+          "evidence_all": ["docs/PRD.md", ".agents/skills/release-orchestrator/SKILL.md", ".mcp.json"]
+        }
+      ]
+    },
+    {
+      "id": "healthy_repo",
+      "scenario": "A small local todo repository aligns PRD, EDD, milestone, implementation, tests, and README.",
+      "required_findings": [],
+      "max_findings": 0
+    },
+    {
+      "id": "progressive_disclosure_correct",
+      "scenario": "EDD remains the engineering hub and links to an extracted storage design with matching semantics and a complete structural log.",
+      "required_findings": [],
+      "max_findings": 0
+    },
+    {
+      "id": "progressive_disclosure_conflict",
+      "scenario": "EDD and an extracted document both claim authority but specify contradictory storage designs, while the structural log claims no semantic change.",
+      "required_findings": [
+        {
+          "category_any": ["Source-of-Truth Ambiguity", "Derived Documentation Drift"],
+          "evidence_all": ["docs/EDD.md", "docs/architecture/storage.md", "docs/structural-change-log.md"]
+        }
+      ]
+    }
+  ]
+}
