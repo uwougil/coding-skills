@@ -1,8 +1,9 @@
 name: Validate skills
 
 on:
-  push:
   pull_request:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -16,9 +17,9 @@ jobs:
         with:
           python-version: "3.11"
       - run: python scripts/validate_skills.py
+      - run: python scripts/test_protocol_contracts.py
       - run: python skills/bootstrap-repo/scripts/test_inspect_repo.py
-      - run: python skills/implement-milestone/scripts/tests/test_contract_snapshot.py
+      - run: python skills/create-issue/scripts/test_gh_issue.py
       - run: python skills/fix-bug/scripts/capture_repro.py --help
       - run: python skills/review-repo/scripts/repo_inventory.py --help
-      - run: python skills/create-issue/scripts/gh_issue.py --help
-      - run: python skills/create-issue/scripts/test_gh_issue.py
+      - run: python skills/review-repo/evals/build_fixtures.py

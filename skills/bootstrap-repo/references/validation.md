@@ -1,48 +1,29 @@
 # Repository Validation
 
-Read this reference before committing or publishing.
+Read this reference before commit or publication.
 
-## Validate the Actual Stack
+## Validate the actual stack
 
-Derive commands from the chosen ecosystem and repository configuration. Do not invent generic commands or declare success because files exist.
+Derive commands from repository configuration. Run applicable setup, build/package, meaningful tests, lint/format/type/static checks, and a smoke path. CI must use reproducible setup and mirror the same core checks.
 
-Run, where applicable:
+Prefer CI triggered on Pull Requests, with default-branch push checks when useful. CI execution is infrastructure, not a skill.
 
-- dependency/configuration parsing and a clean setup using the declared lockfile strategy;
-- a build or package step;
-- meaningful basic tests, then the full justified test suite;
-- formatter check, linter, type checker, and static analysis configured by the project;
-- a smoke run of the primary CLI, service, extension build, application, or library import;
-- CI workflow syntax and parity between CI and documented local commands.
-
-Keep CI minimal: checkout, supported runtime setup, reproducible dependency installation, and the same core checks that pass locally. Pin versions at the granularity appropriate to the ecosystem and avoid unneeded matrices, services, caches, or release automation.
-
-## Intent and Structure Review
+## Intent and delivery review
 
 Confirm that:
 
-- the implementation satisfies the current milestone and does not contradict PRD or EDD;
-- the structure follows the selected ecosystem rather than a hard-coded template;
-- README setup and usage commands were actually exercised;
-- `AGENTS.md` contains only repository-relevant guidance;
-- no unnecessary project skill, MCP configuration, plugin, empty directory, or future-facing document was added;
-- human and generated ownership is clear;
-- any EDD extraction follows "extract, don't duplicate" and has a structure-change log.
+- implementation does not contradict human-maintained PRD/EDD;
+- repository structure follows the selected ecosystem;
+- README commands were exercised;
+- `AGENTS.md` concisely establishes Issue-backed branch/worktree use, PR delivery, reconstructible handoff evidence, green-verification merge gates, and human resolution for PRD/EDD changes;
+- a lightweight PR template captures Issue, changes, verification, and contract impact when appropriate;
+- no unnecessary project skill, MCP, plugin, workflow engine, scheduler, PR/CI/merge manager, or task-local-review skill was added;
+- human-owned and derived artifacts are clearly distinguished.
 
-## Git and Secret Review
+## Git and secret review
 
-Inspect `git status --short`, staged diff, ignored files, and tracked filenames. Ensure the commit contains only intended changes. Search tracked content for credible secret patterns using an available scanner when practical, and manually inspect configuration examples.
+Inspect status, staged diff, ignored files, and tracked paths. Reject real environment files, private keys, credentials, tokens, cookies, and machine-specific secrets. Never print secret values.
 
-At minimum, reject tracked real `.env` files, private keys, credential files, access tokens, cookies, and machine-specific secrets. `.env.example` must contain placeholders only. Do not print discovered secret values; report only the file and remediation.
+## Publication evidence
 
-## Publication Evidence
-
-Local success and remote success are separate. Record evidence for:
-
-- local validation commands and exit status;
-- commit identifier;
-- remote URL and repository identity;
-- pushed default branch;
-- GitHub Actions run identifier, status, conclusion, and inspected failure logs when relevant.
-
-If a required check cannot run because a tool, SDK, authentication, permission, or service is unavailable, state that limitation precisely. Do not relabel an unperformed check as passed.
+Record local validation results, commit identifier, remote identity, pushed branch, and CI run status/conclusion. If authentication, permission, or tooling is unavailable, preserve validated local state and state the exact limitation without claiming publication.

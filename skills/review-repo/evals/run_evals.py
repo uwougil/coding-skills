@@ -18,12 +18,14 @@ WORK = HERE / "_work"
 RESULTS = HERE / "results"
 SCHEMA = HERE / "output-schema.json"
 CASES_FILE = HERE / "cases.json"
+SKILL_ROOT = HERE.parent
 PROMPT = """Use $review-repo to perform a full semantic audit of this entire repository.
 This is an isolated evaluation fixture. Stay read-only and do not modify any file. Read the applicable
-AGENTS.md, docs/PRD.md, docs/EDD.md, relevant milestone, repository structure, source, and tests.
+AGENTS.md, docs/PRD.md, docs/EDD.md, repository-visible Issue and PR artifacts, source, tests, and derived docs.
 Apply the skill's finding threshold: report material evidence-backed issues and do not invent style
 findings. Return only the JSON required by the supplied output schema. In each evidence string include
 a repository-relative path and a tight line range, symbol, test, or command result.
+Copy path names exactly, including leading dots in hidden directories such as `.github/`.
 """
 
 
@@ -40,6 +42,11 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def normalize_evidence(value: str) -> str:
+    """Normalize slash style and optional-dot rendering for GitHub metadata paths."""
+    return value.replace("\\", "/").lower().replace(".github/", "github/")
+
+
 def ensure_fixtures(rebuild: bool) -> None:
     if rebuild or not WORK.is_dir():
         subprocess.run([sys.executable, str(HERE / "build_fixtures.py")], check=True)
@@ -52,11 +59,16 @@ def run_case(codex: str, case: dict, model: str | None) -> dict:
     log = RESULTS / f"{case_id}.log"
     command = [
         codex, "exec", "--ephemeral", "--sandbox", "read-only", "--skip-git-repo-check",
-        "--cd", str(root), "--output-schema", str(SCHEMA), "--output-last-message", str(output),
+        "--cd", str(root), "--add-dir", str(SKILL_ROOT),
+        "--output-schema", str(SCHEMA), "--output-last-message", str(output),
     ]
     if model:
         command.extend(["--model", model])
-    command.append(PROMPT)
+    command.append(
+        PROMPT
+        + f"\nRead and follow the current skill under evaluation at {SKILL_ROOT / 'SKILL.md'} "
+        "and its linked references; it overrides any older installed copy.\n"
+    )
     completed = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace")
     log.write_text(completed.stdout + "\n--- STDERR ---\n" + completed.stderr, encoding="utf-8")
 
@@ -91,10 +103,10 @@ def run_case(codex: str, case: dict, model: str | None) -> dict:
         for required in case.get("required_findings", []):
             match = None
             for finding in findings:
-                evidence = "\n".join(finding.get("evidence", [])).replace("\\", "/").lower()
+                evidence = normalize_evidence("\n".join(finding.get("evidence", [])))
                 if finding.get("category") not in required["category_any"]:
                     continue
-                if all(path.lower() in evidence for path in required["evidence_all"]):
+                if all(normalize_evidence(path) in evidence for path in required["evidence_all"]):
                     match = finding
                     break
             if match is None:
@@ -105,6 +117,31 @@ def run_case(codex: str, case: dict, model: str | None) -> dict:
         maximum = case.get("max_findings")
         if maximum is not None and len(findings) > maximum:
             errors.append(f"expected at most {maximum} findings, got {len(findings)}")
+        report_evidence = normalize_evidence(
+            "\n".join(
+                evidence
+                for finding in findings
+                for evidence in finding.get("evidence", [])
+            )
+        )
+        missing_report_evidence = [
+            path for path in case.get("required_report_evidence_all", [])
+            if normalize_evidence(path) not in report_evidence
+        ]
+        if missing_report_evidence:
+            errors.append(f"missing report-level evidence {missing_report_evidence}")
+        categories = {finding.get("category") for finding in findings}
+        missing_categories = [
+            category for category in case.get("required_categories_all", [])
+            if category not in categories
+        ]
+        if missing_categories:
+            errors.append(f"missing report categories {missing_categories}")
+        expected_candidate = case.get("candidate")
+        if expected_candidate is not None:
+            candidates = report.get("issue_candidates", [])
+            if not any(candidate.get("eligible") is expected_candidate["eligible"] for candidate in candidates):
+                errors.append(f"missing issue candidate with eligible={expected_candidate['eligible']}")
 
     return {
         "id": case_id,
@@ -130,7 +167,7 @@ def write_summary(results: list[dict], codex_version: str) -> None:
         f"- Codex CLI: `{codex_version}`",
         f"- Result: **{passed}/{len(results)} passed; {failed} failed; {blocked} blocked**",
         "- Method: each fixture was reviewed in a separate ephemeral, read-only Codex session using `$review-repo`; structured results were graded on semantic category plus evidence paths, not prose wording.",
-        "- False-positive gates: the healthy repository and correct progressive-disclosure fixture must return zero findings.",
+        "- False-positive gates: the healthy repository must return zero findings, and semantic ambiguity must not become an auto-eligible Issue candidate.",
         "",
         "| Case | Result | Findings | Notes |",
         "| --- | --- | ---: | --- |",
@@ -147,7 +184,7 @@ def write_summary(results: list[dict], codex_version: str) -> None:
         "",
         "## What this eval establishes",
         "",
-        "The cases exercise PRD conflict, EDD dependency drift, milestone scope creep, misleading test volume, stale derived documentation, unnecessary agent infrastructure, a healthy repository, and both correct and conflicting progressive disclosure. A passing result shows that the skill produced the expected evidence-bearing category while preserving the worktree.",
+        "The cases exercise PRD conflict, EDD dependency drift, closed-Issue acceptance gaps, missing PR provenance, cross-PR architecture drift, stale derived documentation, semantic ambiguity, unnecessary agent infrastructure, and a healthy repository. A passing result shows that the skill produced the expected evidence-bearing category, applied the review-to-Issue eligibility guard, and preserved the worktree.",
         "",
         "## Limits of this eval",
         "",

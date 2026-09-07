@@ -79,8 +79,14 @@ def categorize(path: str) -> set[str]:
         categories.add("prd")
     if lower in {"docs/edd.md", "edd.md"} or name.startswith("edd."):
         categories.add("edd")
-    if "milestone" in lower and suffix in {".md", ".txt", ".yaml", ".yml"}:
-        categories.add("milestones")
+    if lower.startswith((".github/issues/", "docs/issues/")) and suffix in {".md", ".json", ".yaml", ".yml"}:
+        categories.add("issue_contracts")
+    if lower.startswith((".github/pulls/", "docs/pulls/")) and suffix in {".md", ".json", ".yaml", ".yml"}:
+        categories.add("pull_request_evidence")
+    if lower in {".github/pull_request_template.md", ".github/pull_request_template.yaml", ".github/pull_request_template.yml"}:
+        categories.add("pull_request_evidence")
+    if lower.startswith((".github/issue_template/", ".github/issue_template.")):
+        categories.add("issue_contracts")
     if name in {"agents.md", "agents.override.md"}:
         categories.add("agent_instructions")
     if lower.startswith(".agents/skills/") or lower.startswith(".codex/agents/"):
@@ -113,7 +119,7 @@ def categorize(path: str) -> set[str]:
 def inventory(root: Path, max_paths: int) -> dict:
     buckets: dict[str, list[str]] = {
         key: [] for key in (
-            "prd", "edd", "milestones", "agent_instructions", "agent_infrastructure",
+            "prd", "edd", "issue_contracts", "pull_request_evidence", "agent_instructions", "agent_infrastructure",
             "manifests", "source", "tests", "ci", "docs", "derived_docs", "generated",
             "structural_logs", "large_text_files",
         )
@@ -145,7 +151,7 @@ def inventory(root: Path, max_paths: int) -> dict:
     log_ok, recent = git(root, "log", "-n", "10", "--date=short", "--pretty=format:%h %ad %s")
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "root": str(root),
         "totals": {"files": total_files, "bytes": total_bytes},
         "git": {

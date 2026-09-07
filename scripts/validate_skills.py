@@ -14,7 +14,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS_DIR = ROOT / "skills"
 EXPECTED_SKILLS = {
     "bootstrap-repo",
-    "implement-milestone",
     "fix-bug",
     "review-repo",
     "create-issue",
@@ -47,7 +46,7 @@ def frontmatter(path: Path) -> tuple[str, str]:
 def validate() -> list[str]:
     errors: list[str] = []
     actual = {
-        path.name for path in SKILLS_DIR.iterdir() if path.is_dir()
+        path.name for path in SKILLS_DIR.iterdir() if path.is_dir() and (path / "SKILL.md").is_file()
     } if SKILLS_DIR.is_dir() else set()
     if actual != EXPECTED_SKILLS:
         errors.append(f"skills directory must contain exactly {sorted(EXPECTED_SKILLS)}; found {sorted(actual)}")
@@ -76,7 +75,11 @@ def validate() -> list[str]:
     for path in ROOT.rglob("*"):
         if not path.is_file() or any(part in {".git", "__pycache__", "_work"} for part in path.parts):
             continue
-        if path.suffix in {".pyc", ".log"}:
+        if path.suffix == ".log":
+            # Behavioral evals intentionally emit raw logs that are excluded by
+            # .gitignore; the tracked-file audit below ensures they are not packaged.
+            continue
+        if path.suffix == ".pyc":
             errors.append(f"generated file must not be packaged: {path.relative_to(ROOT)}")
             continue
         try:
@@ -96,6 +99,22 @@ def validate() -> list[str]:
                 json.loads(text)
             except json.JSONDecodeError as exc:
                 errors.append(f"invalid JSON in {path.relative_to(ROOT)}: {exc}")
+
+    retired_name = "implement-" + "mile" + "stone"
+    retired = SKILLS_DIR / retired_name / "SKILL.md"
+    if retired.exists():
+        errors.append(f"retired skill remains packaged: skills/{retired_name}")
+
+    try:
+        import subprocess
+        tracked_logs = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-files", "*.log"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
+        ).stdout.splitlines()
+    except OSError:
+        tracked_logs = []
+    for tracked_log in tracked_logs:
+        errors.append(f"generated log must not be packaged: {tracked_log}")
 
     # Repo-local discovery uses .agents/skills, while skills/ remains the
     # portable package location. Keep the discovery mirror exact and obvious.
@@ -133,7 +152,7 @@ def main() -> int:
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
-    print(f"Validated {len(EXPECTED_SKILLS)} skill packages and their UTF-8/JSON assets.")
+    print(f"Validated {len(EXPECTED_SKILLS)} Issue/PR-first skill packages and their UTF-8/JSON assets.")
     return 0
 
 

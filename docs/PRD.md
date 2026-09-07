@@ -1,32 +1,29 @@
 # Product Requirements
 
-## Goal
+## Product intent
 
-Provide one portable GitHub repository containing reusable Codex skills developed in the conversations in this project:
+Provide a portable four-skill protocol library for repository engineering with strong general coding agents and standard Git/GitHub artifacts as shared state.
+
+The shipped skills are exactly:
 
 - `bootstrap-repo`
-- `implement-milestone`
+- `create-issue`
 - `fix-bug`
 - `review-repo`
-- `create-issue`
 
-## Users and outcomes
+## User outcomes
 
-Codex users should be able to browse the collection, copy one skill into their personal or project skill directory, invoke it by name, and find its supporting references, deterministic scripts, and evaluation assets in the same package.
+Users can establish a maintainable repository, turn settled work into GitHub Issues, execute bugs under a rigorous debugging protocol, and periodically audit repository-wide semantic health. Different builders and reviewers must be able to collaborate without shared private conversations or proprietary memory.
+
+## Durable contracts
+
+- Humans maintain `docs/PRD.md` as Product Intent and `docs/EDD.md` as Engineering Intent.
+- GitHub Issues represent independently understandable `bug`, `feature`, or `enhancement` Work Contracts.
+- Pull Requests represent Delivery / Handoff Contracts, carrying enough repository-visible evidence for another agent to review or continue the work.
+- The default branch represents accepted implementation reality but does not silently supersede PRD/EDD.
 
 ## Scope
 
-### In scope
+In scope are the four skill packages, directly used references/scripts/evals, concise repository discovery, deterministic validation, and PR-triggered CI. `create-issue` may write verified GitHub Issues; the other skills retain their documented boundaries.
 
-- Preserve the five skill entrypoints and their behavior.
-- Preserve directly used references, scripts, UI metadata, and authored evaluation definitions.
-- Provide concise installation, validation, and repository-boundary documentation.
-- Validate the package in local checks and GitHub Actions.
-
-### Out of scope
-
-- Creating a plugin or marketplace package.
-- Installing the skills into another machine's Codex configuration.
-- Rewriting the existing skill protocols or adding unrelated skills.
-- For `create-issue`, direct GitHub Issue writes are in scope; source code and intent documents remain out of scope.
-- Publishing local credentials, caches, generated fixture workspaces, or raw evaluation logs.
+Out of scope are workflow engines, custom schedulers, worktree/PR/CI/merge managers, task-local-review skills, agent-specific message buses or memory services, marketplace packaging, and publishing credentials or generated evaluation artifacts.

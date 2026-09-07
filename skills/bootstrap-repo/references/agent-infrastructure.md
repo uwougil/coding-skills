@@ -16,6 +16,8 @@ Recheck current official Codex documentation before relying on a path or feature
 
 Default to no new skill, MCP server, or plugin. A positive decision must name the recurring workflow or external capability, why current tools are insufficient, ownership/maintenance cost, credentials and data exposed, and how the integration will be tested.
 
+Ordinary planning, branch/worktree creation, commits, pushes, Pull Requests, CI execution, task-local review, merge, and Issue closure belong to the host coding agent plus Git/GitHub. Do not add orchestrator, manager, CI, merge, or task-review skills for these capabilities.
+
 ## Project Skills
 
 Place a repository-wide skill at `.agents/skills/<name>/SKILL.md`; use a deeper `.agents/skills` directory only when the workflow belongs to that subtree. Keep one focused job per skill. Use scripts only for repeated deterministic work and references only for conditional detail.
@@ -46,6 +48,7 @@ Keep root `AGENTS.md` concise and operational:
 - authoritative intent files and generated-file ownership;
 - setup, test, lint, format, build, and type-check commands that actually work;
 - architecture boundaries that agents could otherwise violate;
+- Issue-backed branch/worktree isolation, PR delivery, reconstructible handoff evidence, and required-verification merge gates;
 - secret-handling and external-mutation constraints;
 - any repository-specific completion checks.
 

@@ -1,4 +1,4 @@
 interface:
   display_name: "Bootstrap Repository"
   short_description: "Compile product intent into a verified GitHub repository"
-  default_prompt: "Use $bootstrap-repo to turn my PRD, EDD, and milestones into a validated repository and publish it to GitHub."
+  default_prompt: "Use $bootstrap-repo to turn my PRD and EDD into a validated repository with PR-first delivery and publish it to GitHub."

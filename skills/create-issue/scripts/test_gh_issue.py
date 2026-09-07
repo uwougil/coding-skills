@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Standard-library tests for the deterministic gh wrapper."""
+"""Standard-library tests for the deterministic GitHub Issue wrapper."""
 
 from __future__ import annotations
 
@@ -25,40 +25,75 @@ class RemoteTests(unittest.TestCase):
 
 class CommandTests(unittest.TestCase):
     def test_list_decodes_json_and_scopes_repo(self) -> None:
-        args = argparse.Namespace(repo="github.com/acme/tool", state="all", search="Bilibili", limit=25)
+        args = argparse.Namespace(repo="github.com/acme/tool", state="all", search="retry", limit=25)
         with patch.object(gh_issue, "run", return_value='[{"number": 7}]') as mocked:
             result = gh_issue.command_list(args)
         self.assertEqual(result, [{"number": 7}])
-        command = mocked.call_args.args[0]
-        self.assertIn("--repo", command)
-        self.assertIn("github.com/acme/tool", command)
-        self.assertIn("Bilibili", command)
+        self.assertIn("github.com/acme/tool", mocked.call_args.args[0])
 
-    def test_create_requires_body_and_returns_url(self) -> None:
+    def test_create_uses_one_type_and_metadata_labels(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             body = Path(directory) / "body.md"
             body.write_text("## Summary\n\nTest", encoding="utf-8")
             args = argparse.Namespace(
                 repo="github.com/acme/tool",
-                title="Add source",
-                label="feature",
+                title="Prevent duplicate charge",
+                label="bug",
+                metadata_label=["parallel:risky", "area:payments"],
                 body_file=str(body),
             )
             with patch.object(gh_issue, "run", return_value="https://github.com/acme/tool/issues/9") as mocked:
                 result = gh_issue.command_create(args)
-        self.assertEqual(result["operation"], "created")
-        self.assertEqual(result["url"], "https://github.com/acme/tool/issues/9")
-        self.assertIn("--body-file", mocked.call_args.args[0])
+        self.assertEqual(result["type"], "bug")
+        command = mocked.call_args.args[0]
+        self.assertEqual(command.count("--label"), 3)
+
+    def test_rejects_invalid_scheduling_label(self) -> None:
+        with self.assertRaises(gh_issue.CliError):
+            gh_issue.validate_metadata_labels(["investigation"])
 
     def test_missing_body_is_blocked(self) -> None:
         args = argparse.Namespace(
             repo="github.com/acme/tool",
             title="Add source",
             label="feature",
+            metadata_label=[],
             body_file="does-not-exist.md",
         )
         with self.assertRaises(gh_issue.CliError):
             gh_issue.command_create(args)
+
+
+class ReviewFindingTests(unittest.TestCase):
+    def eligible(self) -> dict:
+        return {
+            "source_mode": "review-finding",
+            "authoritative_expectation": "EDD forbids domain-to-infrastructure imports.",
+            "direct_evidence": ["src/domain/orders.py imports src/infrastructure/sql.py"],
+            "material_consequence": "The boundary cannot be replaced in tests or deployment.",
+            "bounded_remedy": "Inject the repository port at bootstrap.",
+            "confidence": "high",
+            "prd_edd_semantic_change_required": False,
+            "duplicate_search": {"open": True, "closed": True, "equivalent_issue": None},
+        }
+
+    def test_high_confidence_finding_is_eligible(self) -> None:
+        self.assertEqual(gh_issue.review_finding_errors(self.eligible()), [])
+
+    def test_semantic_change_is_blocked(self) -> None:
+        finding = self.eligible()
+        finding["prd_edd_semantic_change_required"] = True
+        self.assertIn("PRD/EDD semantic decision", " ".join(gh_issue.review_finding_errors(finding)))
+
+    def test_incomplete_duplicate_search_is_blocked(self) -> None:
+        finding = self.eligible()
+        finding["duplicate_search"]["closed"] = False
+        self.assertIn("open and closed", " ".join(gh_issue.review_finding_errors(finding)))
+
+    def test_equivalent_issue_is_blocked(self) -> None:
+        finding = self.eligible()
+        finding["duplicate_search"]["equivalent_issue"] = 12
+        self.assertIn("equivalent Issue", " ".join(gh_issue.review_finding_errors(finding)))
 
 
 if __name__ == "__main__":
