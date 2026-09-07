@@ -18,6 +18,10 @@ Locate equivalent drafts when they are not yet normalized. Implementation, tests
 
 GitHub Issues become the persistent Work Contract layer after bootstrap. Pull Requests are the standard Delivery / Handoff Contract for Issue-backed work, and the default branch represents accepted implementation reality.
 
+## Resolve collaboration language
+
+Before composing repository-facing Issue, PR, review summary, handoff, or status prose, resolve the language in this order: explicit repository or user instruction, scoped `AGENTS.md` policy, dominant language of human-maintained PRD/EDD, then the current settled human request. Explicit instruction wins over an old template, history, code comments, or technical source. Do not infer language from programming languages, dependency names, or identifiers. Write human prose in the resolved language while preserving technical terms, identifiers, commands, errors, paths, URLs, API names, and GitHub numbers verbatim. Never hardcode Chinese; English and other repository languages remain valid.
+
 ## Start with evidence
 
 1. Read PRD, EDD, and applicable `AGENTS.md` files completely.
@@ -47,6 +51,7 @@ Create or maintain a concise project `AGENTS.md` that establishes these invarian
 - Another agent can reconstruct the handoff from PRD/EDD, linked Issue, commits, PR description/diff, tests, and CI—without private conversation state.
 - Required verification must pass before merge.
 - PRD/EDD semantic changes require explicit human resolution.
+- Repository-facing artifacts use the resolved collaboration language and preserve technical strings verbatim.
 
 When useful, add a lightweight PR template with Issue linkage, change summary, verification evidence, and PRD/EDD impact. Do not turn it into a bureaucratic checklist.
 

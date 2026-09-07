@@ -1,0 +1,64 @@
+{
+  "protocol": "collaboration-language-v1",
+  "precedence": [
+    "explicit repository or user instruction",
+    "scoped AGENTS.md policy",
+    "dominant language of human-maintained PRD/EDD",
+    "current settled human request"
+  ],
+  "cases": [
+    {
+      "id": "A",
+      "name": "chinese-repository",
+      "prd_edd_language": "zh-CN",
+      "legacy_template_language": "en",
+      "explicit_instruction": null,
+      "expected_prose_language": "zh-CN",
+      "preserve": ["DocumentSyncCoordinator", "npm run typecheck", "src/editor.py"]
+    },
+    {
+      "id": "B",
+      "name": "english-repository",
+      "prd_edd_language": "en",
+      "legacy_template_language": "zh-CN",
+      "explicit_instruction": null,
+      "expected_prose_language": "en",
+      "preserve": ["DocumentSyncCoordinator", "npm run typecheck", "src/editor.py"]
+    },
+    {
+      "id": "C",
+      "name": "explicit-override",
+      "prd_edd_language": "zh-CN",
+      "legacy_template_language": "zh-CN",
+      "explicit_instruction": "Write the Issue and PR in English.",
+      "expected_prose_language": "en",
+      "preserve": ["#123", "DocumentSyncCoordinator"]
+    },
+    {
+      "id": "D",
+      "name": "misleading-template",
+      "prd_edd_language": "zh-CN",
+      "legacy_template_language": "en",
+      "explicit_instruction": null,
+      "expected_prose_language": "zh-CN",
+      "preserve": ["TypeError: cannot read properties of undefined"]
+    },
+    {
+      "id": "E",
+      "name": "technical-fidelity",
+      "prd_edd_language": "zh-CN",
+      "legacy_template_language": "en",
+      "explicit_instruction": null,
+      "expected_prose_language": "zh-CN",
+      "preserve": [
+        "TypeError: cannot read properties of undefined",
+        "python -m pytest tests/test_editor.py",
+        "src/editor.py",
+        "DocumentSyncCoordinator",
+        "https://github.com/uwougil/coding-skills/issues/123",
+        "#123"
+      ]
+    }
+  ],
+  "side_effect_policy": "Read-only fixture evaluation; never create or modify a live Issue."
+}

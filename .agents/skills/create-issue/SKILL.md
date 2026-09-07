@@ -66,7 +66,7 @@ Read [the GitHub backend reference](references/github-cli.md) before querying or
 
 ## Compose the Work Contract
 
-Use concise repository-appropriate prose. Keep exact identifiers, errors, and URLs. Default body:
+Resolve the collaboration language before drafting the title or body: explicit repository or user instruction, scoped `AGENTS.md` policy, dominant language of human-maintained PRD/EDD, then the current settled human request. Explicit instruction wins over an old template, history, code comments, or technical source. Use the resolved language for human prose, including `review-finding` output, while preserving technical terms, identifiers, errors, commands, paths, URLs, API names, and GitHub numbers verbatim. Never hardcode Chinese; English and other repository languages remain valid. Use concise repository-appropriate prose. Default body:
 
 ```markdown
 ## Summary

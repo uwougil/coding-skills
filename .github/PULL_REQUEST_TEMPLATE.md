@@ -2,16 +2,16 @@
 
 Closes #...
 
-## What changed
+## 修改内容
 
 ...
 
-## Verification
+## 验证
 
 ...
 
-## Contract impact
+## 契约影响
 
-PRD: unchanged / decision required
+PRD：无变化 / 需要人工决策
 
-EDD: unchanged / decision required
+EDD：无变化 / 需要人工决策
