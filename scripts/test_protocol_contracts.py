@@ -26,7 +26,44 @@ class ProtocolContractTests(unittest.TestCase):
         self.assertIn("PRD", agents)
         self.assertIn("EDD", agents)
         for heading in ("Issue", "What changed", "Verification", "Contract impact"):
-            self.assertIn(heading, template)
+            if heading == "What changed":
+                self.assertIn("修改内容", template)
+            elif heading == "Verification":
+                self.assertIn("验证", template)
+            elif heading == "Contract impact":
+                self.assertIn("契约影响", template)
+            else:
+                self.assertIn(heading, template)
+
+    def test_collaboration_language_policy_is_explicit_portable_and_preserves_technical_strings(self) -> None:
+        agents = self.read("AGENTS.md")
+        bootstrap = self.read("skills/bootstrap-repo/SKILL.md")
+        workflow = self.read("skills/bootstrap-repo/references/workflow.md")
+        create_issue = self.read("skills/create-issue/SKILL.md")
+        fix_bug = self.read("skills/fix-bug/SKILL.md")
+        review_repo = self.read("skills/review-repo/SKILL.md")
+        cases = json.loads(self.read("skills/create-issue/evals/language-cases.json"))
+
+        for text in (bootstrap, create_issue):
+            lowered = text.lower()
+            for phrase in ("explicit", "agents.md", "prd/edd", "technical", "identifier", "command", "url"):
+                self.assertIn(phrase, lowered)
+        for phrase in ("显式", "prd", "edd", "技术术语", "标识符", "命令", "url"):
+            self.assertIn(phrase, agents.lower())
+        self.assertIn("never hardcode chinese", bootstrap.lower())
+        self.assertIn("never hardcode chinese", create_issue.lower())
+        self.assertIn("english and other repository languages", bootstrap.lower())
+        self.assertIn("propagate the resolved language", workflow.lower())
+        self.assertIn("resolved collaboration language", fix_bug.lower())
+        self.assertIn("resolved collaboration language", review_repo.lower())
+
+        self.assertEqual(cases["protocol"], "collaboration-language-v1")
+        self.assertEqual([case["id"] for case in cases["cases"]], ["A", "B", "C", "D", "E"])
+        self.assertEqual(cases["cases"][0]["expected_prose_language"], "zh-CN")
+        self.assertEqual(cases["cases"][1]["expected_prose_language"], "en")
+        self.assertEqual(cases["cases"][2]["expected_prose_language"], "en")
+        self.assertIn("python -m pytest tests/test_editor.py", cases["cases"][4]["preserve"])
+        self.assertIn("https://github.com/uwougil/coding-skills/issues/123", cases["cases"][4]["preserve"])
 
     def test_bootstrap_requires_only_prd_edd_and_pr_first_handoff(self) -> None:
         skill = self.read("skills/bootstrap-repo/SKILL.md")

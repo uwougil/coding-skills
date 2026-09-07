@@ -11,6 +11,7 @@
     "high_confidence"
   ],
   "semantic_guard": "no_unapproved_prd_edd_semantic_change",
+  "collaboration_language_cases": "language-cases.json",
   "cases": [
     "simple-feature",
     "enhancement",

@@ -62,4 +62,4 @@ If the invocation authorizes repository-health automation, invoke `create-issue`
 
 ## Output
 
-Lead with findings ordered by severity. Then summarize PRD status, EDD status, Issue/PR provenance status, test confidence, architecture drift, derived-doc status, agent-infrastructure fitness, eligible Issue candidates, and recommended next actions. State explicitly when no substantive findings exist.
+Lead with findings ordered by severity. Then summarize PRD status, EDD status, Issue/PR provenance status, test confidence, architecture drift, derived-doc status, agent-infrastructure fitness, eligible Issue candidates, and recommended next actions. Write this repository-facing report in the resolved collaboration language from scoped policy, and preserve technical evidence verbatim. State explicitly when no substantive findings exist.

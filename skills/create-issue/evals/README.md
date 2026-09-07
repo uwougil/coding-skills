@@ -17,3 +17,15 @@ Use fixtures and mocked GitHub calls. Grade decisions and side effects, not exac
 | Parallelism metadata | Optional scheduling hint; never a fourth top-level type or speculative implementation plan |
 
 Live GitHub mutation is not required for evaluation. Authentication and permission failures must be reported as blockers rather than simulated as success.
+
+## Collaboration language matrix
+
+`language-cases.json` is a compact, side-effect-free behavior matrix for repository-facing prose. It checks precedence, misleading legacy templates, portability beyond Chinese, and verbatim preservation of technical strings. Grade the resolved language and preserved strings rather than exact wording.
+
+| Case | Expected behavior |
+| --- | --- |
+| A. Chinese repository | Use Chinese human prose even when a legacy template is English; keep technical strings unchanged |
+| B. English repository | Use English human prose; do not translate identifiers or commands |
+| C. Explicit override | An explicit current instruction overrides PRD/EDD and older repository conventions |
+| D. Misleading template | A stale template does not override scoped policy or dominant PRD/EDD language |
+| E. Technical fidelity | Commands, errors, paths, URLs, API names, and GitHub numbers remain byte-for-byte recognizable |

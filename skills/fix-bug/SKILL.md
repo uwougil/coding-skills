@@ -86,7 +86,7 @@ After the patch:
 5. Decide from blast radius whether the full suite or end-to-end tests are warranted.
 6. Run applicable lint, type, and build checks.
 7. Inspect the final diff and status for minimality and unrelated changes.
-8. Assemble PR-ready evidence: linked Issue, before/after reproduction, regression test, commands and outcomes, scope boundary, and any PRD/EDD impact.
+8. Assemble PR-ready evidence: linked Issue, before/after reproduction, regression test, commands and outcomes, scope boundary, and any PRD/EDD impact. Use the repository's resolved collaboration language for human-facing handoff prose; preserve commands, errors, identifiers, paths, URLs, API names, and GitHub numbers verbatim.
 
 Read [verification-and-reporting.md](references/verification-and-reporting.md) for cross-component, async/concurrency, dependency/platform, data-format, or otherwise high-blast-radius fixes. Report every material check as passed, failed, or not run with a reason; distinguish unrelated pre-existing failures without hiding them.
 

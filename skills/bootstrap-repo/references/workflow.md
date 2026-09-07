@@ -14,6 +14,8 @@ Translate the two intent sources into a concise working model:
 - GitHub destination and CI expectations;
 - Issue and Pull Request conventions for later work.
 
+Resolve the collaboration language before drafting those conventions or any repository-facing artifact. Use the precedence and technical-string preservation rule in the skill entrypoint; propagate the resolved language into `AGENTS.md`, the PR template, Issue text, PR text, review summaries, handoffs, and status updates. Keep this policy portable: a repository may use English, Chinese, or another language.
+
 Do not create another permanent planning document by default. GitHub Issues carry independently deliverable work after bootstrap. Record a confirmed product or engineering decision in PRD/EDD only when the human has explicitly resolved it.
 
 ## Research before questions

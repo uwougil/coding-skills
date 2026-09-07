@@ -17,6 +17,8 @@ PRD / EDD → create-issue → Issue → builder / fix-bug → PR → CI + task-
 
 `docs/PRD.md` 和 `docs/EDD.md` 是人维护的长期产品与工程意图。Issue 是可独立理解的 Work Contract；PR 是标准 Delivery / Handoff Contract。分支、worktree、提交、推送、PR、CI 修复、普通合并与 Issue 关闭由具备能力的宿主 Agent 和 Git/GitHub 完成，不需要额外的编排 skill。
 
+Issue、PR、review summary、handoff 和状态说明遵循根目录 `AGENTS.md` 的协作语言优先级；技术术语、标识符、命令、错误信息、路径、URL、API 名称和 GitHub 编号保持原文。
+
 ## 安装与发现
 
 将需要的目录复制到个人或项目 skill 目录：
