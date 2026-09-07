@@ -49,4 +49,8 @@ Official reference: https://cli.github.com/manual/gh_run
 
 ## PR-first follow-up delivery
 
-Repository birth may push the initial default branch directly. Subsequent Issue-backed or cross-agent changes should normally use an isolated branch or worktree and a Pull Request. The PR should link its Issue when one exists and summarize changes, verification, and PRD/EDD impact. Do not merge while required CI or task-local review is failing; routine PR creation, repair, merge, and Issue closure remain host-agent and GitHub responsibilities rather than separate skills.
+Repository birth may push the initial default branch directly. Subsequent Issue-backed or cross-agent changes should normally use an isolated branch or worktree and a Pull Request. The PR links its Issue with one or more exact `Refs #N` lines and summarizes changes, verification, and PRD/EDD impact. Never use `Closes`, `Fixes`, or `Resolves`: merge admits code to the default branch but does not complete the Work Contract.
+
+Do not merge while required PR CI or task-local review is failing. After authorized merge, wait for CI on the merged commit's default-branch `push`. The separate finalizer then uses GitHub's commit-associated Pull Request API to resolve the merged PR. Main CI success comments and closes each linked open Issue; any other conclusion comments and leaves it open. Routine PR creation, repair, and merge remain host-agent and GitHub responsibilities rather than separate skills.
+
+Read [Main CI Issue finalization](issue-finalization.md) before installing or migrating this automation.

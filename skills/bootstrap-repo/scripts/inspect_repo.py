@@ -180,6 +180,10 @@ def build_snapshot(root: Path) -> dict[str, Any]:
             "issue_templates": sorted(
                 path for path in files if path.lower().startswith(".github/issue_template/")
             ),
+            "main_ci_issue_finalization": {
+                "workflow": ".github/workflows/issue-finalize.yml" in file_set,
+                "script": ".github/scripts/issue-finalize.js" in file_set,
+            },
         },
         "agent_infrastructure": {
             "agents_md": "AGENTS.md" in file_set,

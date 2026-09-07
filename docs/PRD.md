@@ -19,11 +19,12 @@ Users can establish a maintainable repository, turn settled work into GitHub Iss
 
 - Humans maintain `docs/PRD.md` as Product Intent and `docs/EDD.md` as Engineering Intent.
 - GitHub Issues represent independently understandable `bug`, `feature`, or `enhancement` Work Contracts.
-- Pull Requests represent Delivery / Handoff Contracts, carrying enough repository-visible evidence for another agent to review or continue the work.
+- Pull Requests represent Delivery / Handoff Contracts, carrying enough repository-visible evidence for another agent to review or continue the work. They link Issues with `Refs #N`; merge does not itself complete or close a Work Contract.
+- Main CI on the default branch is the final automated acceptance gate. Success comments on and closes each still-open linked Issue; any non-success conclusion comments and keeps the Issue open for follow-up.
 - The default branch represents accepted implementation reality but does not silently supersede PRD/EDD.
 
 ## Scope
 
-In scope are the four skill packages, directly used references/scripts/evals, concise repository discovery, deterministic validation, and PR-triggered CI. `create-issue` may write verified GitHub Issues; the other skills retain their documented boundaries.
+In scope are the four skill packages, directly used references/scripts/evals/assets, concise repository discovery, deterministic validation, PR-triggered CI, and default-branch CI completion feedback for linked Issues. `create-issue` may write verified GitHub Issues; bootstrap-generated GitHub automation may comment on and close linked Issues only after Main CI; the other skills retain their documented boundaries.
 
 Out of scope are workflow engines, custom schedulers, worktree/PR/CI/merge managers, task-local-review skills, agent-specific message buses or memory services, marketplace packaging, and publishing credentials or generated evaluation artifacts.

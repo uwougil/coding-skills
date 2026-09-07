@@ -44,11 +44,18 @@ class InspectRepoTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / ".agents" / "skills" / "release").mkdir(parents=True)
-            (root / ".github").mkdir()
+            (root / ".github" / "workflows").mkdir(parents=True)
+            (root / ".github" / "scripts").mkdir(parents=True)
             (root / ".agents" / "skills" / "release" / "SKILL.md").write_text("---\n", encoding="utf-8")
             (root / ".github" / "PULL_REQUEST_TEMPLATE.md").write_text("## Issue\n", encoding="utf-8")
+            (root / ".github" / "workflows" / "issue-finalize.yml").write_text("name: finalize\n", encoding="utf-8")
+            (root / ".github" / "scripts" / "issue-finalize.js").write_text("module.exports = {};\n", encoding="utf-8")
             snapshot = build_snapshot(root)
             self.assertTrue(snapshot["delivery_contract"]["pull_request_template"])
+            self.assertEqual(
+                snapshot["delivery_contract"]["main_ci_issue_finalization"],
+                {"workflow": True, "script": True},
+            )
             self.assertEqual(snapshot["agent_infrastructure"]["project_skills"], [".agents/skills/release/SKILL.md"])
 
     def test_url_userinfo_is_redacted(self) -> None:

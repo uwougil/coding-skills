@@ -28,7 +28,7 @@ Research only facts that affect the current repository. Separate primary-source 
 2. Resolve material contradictions with the user.
 3. Select the smallest viable architecture.
 4. Create working source and meaningful tests.
-5. Add concise README/AGENTS, CI, and a lightweight PR template when it improves handoff portability.
+5. For every new GitHub repository, add concise README/AGENTS, CI, a lightweight `Refs #N` PR template, and the separate Main CI Issue finalizer.
 6. Run local validation and secret review.
 7. Initialize Git, make a focused initial commit, publish the repository, and verify CI.
 
@@ -44,6 +44,8 @@ docs/PRD.md
 docs/EDD.md
 .github/PULL_REQUEST_TEMPLATE.md
 .github/workflows/ci.yml
+.github/workflows/issue-finalize.yml
+.github/scripts/issue-finalize.js
 src/
 tests/
 ```
@@ -65,11 +67,13 @@ Do not create empty or future-facing trees just to match this example.
 Keep the project `AGENTS.md` concise, but make repository-visible handoff reconstructible. A normal later lifecycle is:
 
 ```text
-Issue → branch/worktree → implementation → commit → push → PR
-      → CI + task-local review → repair → merge → Issue closure
+Issue → branch/worktree → implementation → commit → push → PR with Refs #N
+      → PR CI + task-local review → repair → authorized merge → Main CI
+      → success: comment + close Issue
+      → non-success: comment + keep Issue open
 ```
 
-The host coding agent and Git/GitHub own ordinary orchestration. Do not introduce a workflow engine or manager skill.
+Merge is code admission, not Work Contract completion. Agents must not use GitHub auto-close keywords in PR bodies. The host coding agent and Git/GitHub own ordinary orchestration; the small post-Main-CI finalizer owns only status feedback and closure. Do not introduce a workflow engine or manager skill.
 
 ## Progressive disclosure of EDD
 
