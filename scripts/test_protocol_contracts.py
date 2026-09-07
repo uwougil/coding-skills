@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 import unittest
 
 
@@ -74,6 +75,50 @@ class ProtocolContractTests(unittest.TestCase):
         self.assertIn("without private conversation state", skill)
         self.assertIn("Required verification must pass before merge", skill)
         self.assertIn("Issue → branch/worktree → implementation → commit → push → PR", workflow)
+
+    def test_bootstrap_main_ci_finalizes_linked_issues_without_merge_autoclose(self) -> None:
+        skill = self.read("skills/bootstrap-repo/SKILL.md")
+        workflow_doc = self.read("skills/bootstrap-repo/references/workflow.md")
+        finalization_doc = self.read("skills/bootstrap-repo/references/issue-finalization.md")
+        root_template = self.read(".github/PULL_REQUEST_TEMPLATE.md")
+        asset_template = self.read("skills/bootstrap-repo/assets/github/PULL_REQUEST_TEMPLATE.md")
+        root_workflow = self.read(".github/workflows/issue-finalize.yml")
+        asset_workflow = self.read("skills/bootstrap-repo/assets/github/workflows/issue-finalize.yml")
+        script = self.read("skills/bootstrap-repo/assets/github/scripts/issue-finalize.js")
+
+        for template in (root_template, asset_template):
+            self.assertIn("Refs #<number>", template)
+            self.assertIsNone(re.search(r"(?mi)^\s*(?:Closes|Fixes|Resolves)\s+#", template))
+        for text in (skill, workflow_doc, finalization_doc):
+            self.assertIn("merge", text.lower())
+            self.assertIn("main ci", text.lower())
+            self.assertIn("refs #n", text.lower())
+        self.assertIn("For every new GitHub repository bootstrap", skill)
+
+        self.assertEqual(
+            asset_workflow.replace('"__MAIN_CI_WORKFLOW_NAME__"', '"Validate skills"'),
+            root_workflow,
+        )
+        for phrase in (
+            "workflow_run:",
+            "types: [completed]",
+            "workflow_run.event == 'push'",
+            "workflow_run.head_branch == github.event.repository.default_branch",
+            "contents: read",
+            "pull-requests: read",
+            "issues: write",
+        ):
+            self.assertIn(phrase, asset_workflow)
+        for phrase in (
+            "listPullRequestsAssociatedWithCommit",
+            "merge_commit_sha === run.head_sha",
+            "issue.pull_request",
+            "issue.state !== 'open'",
+            "state_reason: 'completed'",
+            "run_attempt",
+            "github.paginate",
+        ):
+            self.assertIn(phrase, script)
 
     def test_create_issue_semantic_manifest(self) -> None:
         manifest = json.loads(self.read("skills/create-issue/evals/manifest.json"))
@@ -146,6 +191,8 @@ class ProtocolContractTests(unittest.TestCase):
             "python scripts/validate_skills.py",
             "python scripts/test_protocol_contracts.py",
             "python skills/bootstrap-repo/scripts/test_inspect_repo.py",
+            "python skills/bootstrap-repo/scripts/test_github_templates.py",
+            "node skills/bootstrap-repo/scripts/test_issue_finalize.js",
             "python skills/create-issue/scripts/test_gh_issue.py",
         ):
             self.assertIn(command, workflow)

@@ -19,6 +19,8 @@ jobs:
       - run: python scripts/validate_skills.py
       - run: python scripts/test_protocol_contracts.py
       - run: python skills/bootstrap-repo/scripts/test_inspect_repo.py
+      - run: python skills/bootstrap-repo/scripts/test_github_templates.py
+      - run: node skills/bootstrap-repo/scripts/test_issue_finalize.js
       - run: python skills/create-issue/scripts/test_gh_issue.py
       - run: python skills/fix-bug/scripts/capture_repro.py --help
       - run: python skills/review-repo/scripts/repo_inventory.py --help

@@ -5,7 +5,9 @@
 - `docs/PRD.md` and `docs/EDD.md` are human-maintained Product Intent and Engineering Intent. Never change their semantics without explicit human resolution.
 - GitHub Issues are Work Contracts. Issue-backed changes should normally use an isolated branch or worktree and be delivered through a Pull Request.
 - A Pull Request is the repository-visible Delivery / Handoff Contract. Another agent must be able to reconstruct the work from PRD/EDD, the linked Issue when present, commits, PR description and diff, tests, and CI without private conversation state.
-- Do not merge Issue-backed work while required verification is failing. The default branch is accepted implementation reality, not authority to silently override PRD/EDD.
+- Link Issue-backed PRs with an exact `Refs #N` line. Agents must not use `Closes #N`, `Fixes #N`, or `Resolves #N`; merging code must not auto-close the Work Contract.
+- Do not merge Issue-backed work while required PR verification is failing. Merge means code entered the default branch, not that delivery is complete. Only successful Main CI completes the Work Contract; automation comments and closes the Issue on success, or comments and keeps it open on any non-success conclusion.
+- The default branch is accepted implementation reality, not authority to silently override PRD/EDD.
 
 ## 协作语言
 

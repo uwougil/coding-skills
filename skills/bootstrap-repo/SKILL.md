@@ -16,7 +16,7 @@ Treat these as human-maintained canonical contracts:
 
 Locate equivalent drafts when they are not yet normalized. Implementation, tests, Issues, PRs, README, and current code are evidence or derived state; none silently changes PRD/EDD semantics. If the requested bootstrap requires a product or engineering semantic decision, stop that portion and ask the user to resolve it.
 
-GitHub Issues become the persistent Work Contract layer after bootstrap. Pull Requests are the standard Delivery / Handoff Contract for Issue-backed work, and the default branch represents accepted implementation reality.
+GitHub Issues become the persistent Work Contract layer after bootstrap. Pull Requests are the standard Delivery / Handoff Contract for Issue-backed work, and the default branch represents accepted implementation reality. Merge is not completion: only successful CI for the merged commit on the default branch completes the Work Contract.
 
 ## Resolve collaboration language
 
@@ -48,12 +48,14 @@ Read [agent infrastructure](references/agent-infrastructure.md) when agents, MCP
 Create or maintain a concise project `AGENTS.md` that establishes these invariants:
 
 - Issue-backed changes normally use an isolated branch or worktree and are delivered through a PR.
+- PRs link Issues with exact `Refs #N` lines; agents do not use `Closes`, `Fixes`, or `Resolves` because merge must not auto-close the Work Contract.
 - Another agent can reconstruct the handoff from PRD/EDD, linked Issue, commits, PR description/diff, tests, and CI—without private conversation state.
 - Required verification must pass before merge.
+- Merge only admits code to the default branch. Main CI success comments on and closes linked open Issues; every non-success conclusion comments and leaves them open.
 - PRD/EDD semantic changes require explicit human resolution.
 - Repository-facing artifacts use the resolved collaboration language and preserve technical strings verbatim.
 
-When useful, add a lightweight PR template with Issue linkage, change summary, verification evidence, and PRD/EDD impact. Do not turn it into a bureaucratic checklist.
+For every new GitHub repository bootstrap, add a lightweight PR template with non-closing Issue linkage, change summary, verification evidence, and PRD/EDD impact, plus the separate Main CI finalization workflow. Read [Main CI Issue finalization](references/issue-finalization.md) and adapt the bundled assets to the repository. An existing repository receives these files only through an explicit re-bootstrap migration. Do not turn the template into a bureaucratic checklist or couple Issue lifecycle code into the project's test jobs.
 
 ## Materialize conservatively
 
@@ -65,7 +67,7 @@ For an existing repository, perform delta analysis and make additive, minimal ch
 
 Read [validation](references/validation.md) before declaring local completion and [GitHub publication](references/github.md) before creating or changing a remote.
 
-Completion requires actual setup/build/test quality gates, CI parity, secret review, intended Git status, verified GitHub identity, a pushed default branch, and a checked first CI run. Prefer CI on Pull Requests plus appropriate default-branch pushes. Never claim publication or CI success without evidence.
+Completion requires actual setup/build/test quality gates, CI parity, secret review, intended Git status, verified GitHub identity, a pushed default branch, and a checked first CI run. Configure CI on Pull Requests and default-branch pushes, then verify that the separate finalizer watches the exact CI workflow name and cannot act on PR CI. Never claim publication or CI success without evidence.
 
 ## Maintain the skill
 

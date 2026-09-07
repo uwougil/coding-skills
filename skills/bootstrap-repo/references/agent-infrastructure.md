@@ -16,7 +16,7 @@ Recheck current official Codex documentation before relying on a path or feature
 
 Default to no new skill, MCP server, or plugin. A positive decision must name the recurring workflow or external capability, why current tools are insufficient, ownership/maintenance cost, credentials and data exposed, and how the integration will be tested.
 
-Ordinary planning, branch/worktree creation, commits, pushes, Pull Requests, CI execution, task-local review, merge, and Issue closure belong to the host coding agent plus Git/GitHub. Do not add orchestrator, manager, CI, merge, or task-review skills for these capabilities.
+Ordinary planning, branch/worktree creation, commits, pushes, Pull Requests, CI execution, task-local review, and authorized merge belong to the host coding agent plus Git/GitHub. A small repository workflow may finalize linked Issues after Main CI; this is standard GitHub automation, not a reason to add orchestrator, manager, CI, merge, or task-review skills.
 
 ## Project Skills
 
@@ -48,7 +48,7 @@ Keep root `AGENTS.md` concise and operational:
 - authoritative intent files and generated-file ownership;
 - setup, test, lint, format, build, and type-check commands that actually work;
 - architecture boundaries that agents could otherwise violate;
-- Issue-backed branch/worktree isolation, PR delivery, reconstructible handoff evidence, and required-verification merge gates;
+- Issue-backed branch/worktree isolation, `Refs #N` PR delivery, reconstructible handoff evidence, required-verification merge gates, and the invariant that only Main CI success completes and closes a Work Contract;
 - secret-handling and external-mutation constraints;
 - any repository-specific completion checks.
 
