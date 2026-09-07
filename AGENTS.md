@@ -1,19 +1,15 @@
 # Repository Instructions
 
-## Source and ownership
+## Contracts
 
-- Each `skills/<name>/SKILL.md` is the authoritative entrypoint for that skill.
-- `.agents/skills/create-issue/` is a repository-discovery mirror of `skills/create-issue/`; keep its tracked files byte-for-byte synchronized with the authoritative package.
-- Supporting references, scripts, and eval definitions belong to their owning skill and should remain linked from its entrypoint or evaluation workflow.
-- Root `README.md`, `scripts/validate_skills.py`, and CI are derived packaging and verification files; keep them synchronized with the five skill directories.
+- `docs/PRD.md` and `docs/EDD.md` are human-maintained Product Intent and Engineering Intent. Never change their semantics without explicit human resolution.
+- GitHub Issues are Work Contracts. Issue-backed changes should normally use an isolated branch or worktree and be delivered through a Pull Request.
+- A Pull Request is the repository-visible Delivery / Handoff Contract. Another agent must be able to reconstruct the work from PRD/EDD, the linked Issue when present, commits, PR description and diff, tests, and CI without private conversation state.
+- Do not merge Issue-backed work while required verification is failing. The default branch is accepted implementation reality, not authority to silently override PRD/EDD.
 
-## Verification
+## Repository maintenance
 
-Run the commands documented in `README.md` before committing. Do not add third-party runtime dependencies for repository validation.
-
-## Scope and safety
-
-- Keep the repository limited to `bootstrap-repo`, `implement-milestone`, `fix-bug`, `review-repo`, and `create-issue` plus the minimal packaging files.
-- Preserve each skill's behavioral contract and evaluation assets; do not silently weaken instructions or assertions while reorganizing files.
-- Never commit credentials, tokens, private keys, local Codex configuration, generated caches, or raw evaluation logs.
-- Changes that alter a skill's behavior require updating its relevant evaluation or documentation and rerunning the focused checks.
+- Keep exactly `bootstrap-repo`, `create-issue`, `fix-bug`, and `review-repo` under `skills/`; do not add orchestration, merge, CI, or task-local-review skills.
+- `.agents/skills/create-issue/` is a discovery mirror of `skills/create-issue/`; keep tracked files byte-for-byte synchronized.
+- Keep skill entrypoints, references, scripts, eval manifests, root docs, validator, and CI consistent.
+- Run every deterministic command in `README.md` before delivery. Preserve unrelated work and never commit credentials, caches, generated workspaces, or raw model logs.

@@ -1,29 +1,32 @@
 # Engineering Design
 
-## Package layout
+## Architecture
 
-The repository is a static skill collection. Each skill is an independent package under `skills/<skill-name>/` with this conventional shape where applicable:
+The repository is a static, independently installable skill collection under `skills/<skill-name>/`. Each package may contain `SKILL.md`, `agents/openai.yaml`, and only the references, scripts, or eval assets required by its protocol. The four packages do not import one another at runtime.
+
+The shared engineering model is:
 
 ```text
-SKILL.md
-agents/openai.yaml
-references/
-scripts/
-evals/
+PRD / EDD (human-owned intent)
+  → GitHub Issue (Work Contract)
+  → branch or worktree implementation
+  → commits + Pull Request (Delivery / Handoff Contract)
+  → CI and task-local review
+  → default branch (accepted implementation reality)
+  → independent review-repo audit
+  → high-confidence finding through create-issue
 ```
 
-The five packages are intentionally independent: they may be installed separately and must not import one another at runtime. The root contains only collection documentation, validation, ignore rules, and CI.
+Ordinary planning, branch/worktree handling, commits, pushes, PR creation, CI repair, review, merge, and Issue closure are host-agent and Git/GitHub capabilities. They are deliberately not modeled as skills or custom orchestration infrastructure.
 
-`create-issue` may invoke an already authenticated `gh` CLI session through its stdlib-only wrapper. It must fail closed when repository identity or authentication is unavailable and must never store credentials.
+## Authority and portability
 
-## Source fidelity
+PRD and EDD semantics change only through explicit human resolution. Issues scope individual work; PRs preserve delivery evidence. A handoff must be reconstructible from repository-visible artifacts and cannot depend on hidden reasoning, session state, or a particular Agent vendor.
 
-Skill behavior is defined by each package's `SKILL.md`. Reorganization may change repository topology, but must preserve frontmatter, instructions, links, scripts, and authored evaluation semantics. Generated Python caches, temporary evaluation worktrees, and raw logs are excluded from version control.
+`create-issue` uses an authenticated `gh` CLI session through a standard-library wrapper and fails closed on missing identity, authentication, duplicate checks, or review-finding eligibility. `.agents/skills/create-issue/` remains a byte-identical discovery mirror of the portable package.
 
-## Validation
+## Validation and CI
 
-The root validator checks package presence, required frontmatter, UI metadata, UTF-8 readability, JSON evaluation assets, and the absence of machine-local paths. Focused standard-library tests exercise the bundled deterministic helpers. CI runs the same checks on Python 3.11.
+The root validator checks the exact skill inventory, package structure, UTF-8/Python/JSON validity, mirror fidelity, retired-workflow absence, structured protocol manifests, and forbidden orchestration skills. Focused standard-library tests exercise bootstrap discovery, Issue backend guards, cross-skill protocol invariants, and review fixture generation. CI runs the same deterministic commands on pushes and Pull Requests.
 
-## Distribution
-
-The repository is pushed to a user-selected GitHub owner and visibility. No credentials are stored in the repository or passed through tracked files.
+Generated caches, temporary evaluation worktrees, raw model logs, local paths, and credentials are excluded from version control.

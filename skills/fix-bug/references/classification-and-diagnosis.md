@@ -16,7 +16,7 @@ A classification is a working hypothesis until the baseline reproduction and con
 
 ## Contract precedence
 
-Apply the repository's explicit authority rules when present. Otherwise, treat accepted PRD behavior as product intent and the EDD as its architectural realization; neither a test nor the current implementation silently overrides them. A Milestone can narrow delivery scope but should not silently redefine the product contract.
+Apply the repository's explicit authority rules when present. Otherwise, treat accepted PRD behavior as product intent, the EDD as its architectural realization, and the linked Issue as the bounded Work Contract. Neither an Issue, a test, nor the current implementation silently overrides PRD/EDD semantics. If the Issue would require such a change, stop and request a human PRD/EDD decision.
 
 When sources conflict, quote or point to the smallest relevant passages and ask one concrete question. Preserve work already supported by undisputed contract sections, but do not implement the disputed behavior.
 

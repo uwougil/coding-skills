@@ -22,6 +22,12 @@ class CliError(RuntimeError):
     """A safe, user-facing command failure."""
 
 
+TYPE_LABELS = ("bug", "feature", "enhancement")
+SCHEDULING_LABEL_RE = re.compile(
+    r"^(?:parallel:(?:candidate|risky|blocked)|depends-on:\d+|area:[a-z0-9][a-z0-9._-]*)$"
+)
+
+
 def run(command: list[str], *, capture: bool = True) -> str:
     try:
         completed = subprocess.run(
@@ -151,12 +157,74 @@ def body_args(args: argparse.Namespace) -> list[str]:
     return ["--body-file", str(path)]
 
 
+def validate_metadata_labels(labels: list[str]) -> list[str]:
+    invalid = [label for label in labels if not SCHEDULING_LABEL_RE.fullmatch(label)]
+    if invalid:
+        raise CliError(
+            "Unsupported scheduling label(s): " + ", ".join(invalid)
+        )
+    return labels
+
+
+def review_finding_errors(document: object) -> list[str]:
+    if not isinstance(document, dict):
+        return ["review finding must be a JSON object"]
+    errors: list[str] = []
+    if document.get("source_mode") != "review-finding":
+        errors.append("source_mode must be review-finding")
+    for key in (
+        "authoritative_expectation",
+        "material_consequence",
+        "bounded_remedy",
+    ):
+        if not isinstance(document.get(key), str) or not document[key].strip():
+            errors.append(f"{key} must be non-empty")
+    evidence = document.get("direct_evidence")
+    if not isinstance(evidence, list) or not evidence or not all(
+        isinstance(item, str) and item.strip() for item in evidence
+    ):
+        errors.append("direct_evidence must contain repository evidence")
+    if document.get("confidence") != "high":
+        errors.append("confidence must be high")
+    if document.get("prd_edd_semantic_change_required") is not False:
+        errors.append("PRD/EDD semantic decision must not be required")
+    duplicate = document.get("duplicate_search")
+    if not isinstance(duplicate, dict) or duplicate.get("open") is not True or duplicate.get("closed") is not True:
+        errors.append("duplicate search must cover open and closed Issues")
+    elif duplicate.get("equivalent_issue") is not None:
+        errors.append("an equivalent Issue already exists")
+    return errors
+
+
+def command_check_review_finding(args: argparse.Namespace) -> object:
+    path = Path(args.finding_file)
+    if not path.is_file():
+        raise CliError(f"Finding file does not exist: {path}")
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise CliError(f"Finding file is not valid UTF-8 JSON: {path}: {exc}") from exc
+    errors = review_finding_errors(document)
+    if errors:
+        raise CliError("Review finding is ineligible: " + "; ".join(errors))
+    return {"source_mode": "review-finding", "eligible": True}
+
+
 def command_create(args: argparse.Namespace) -> object:
     repo = repo_arg(args.repo)
+    metadata = validate_metadata_labels(args.metadata_label)
     command = ["gh", "issue", "create", "--title", args.title, *body_args(args), "--label", args.label]
+    for label in metadata:
+        command += ["--label", label]
     output = run(add_repo(command, repo))
     url = output.splitlines()[-1].strip() if output else ""
-    return {"repository": repo, "operation": "created", "url": url}
+    return {
+        "repository": repo,
+        "operation": "created",
+        "type": args.label,
+        "scheduling_labels": metadata,
+        "url": url,
+    }
 
 
 def command_comment(args: argparse.Namespace) -> object:
@@ -204,11 +272,24 @@ def parser() -> argparse.ArgumentParser:
     ensure.add_argument("--color", default="ededed")
     ensure.set_defaults(func=command_ensure_label)
 
+    finding = sub.add_parser(
+        "check-review-finding",
+        help="validate the autonomous review-finding gate without writing",
+    )
+    finding.add_argument("--finding-file", required=True)
+    finding.set_defaults(func=command_check_review_finding)
+
     for name, func, help_text in (("create", command_create, "create one Issue"), ("comment", command_comment, "append a comment"), ("edit", command_edit, "replace one Issue body")):
         item = sub.add_parser(name, help=help_text)
         if name == "create":
             item.add_argument("--title", required=True)
-            item.add_argument("--label", required=True)
+            item.add_argument("--label", required=True, choices=TYPE_LABELS)
+            item.add_argument(
+                "--metadata-label",
+                action="append",
+                default=[],
+                help="optional scheduling hint such as parallel:risky or area:payments",
+            )
         else:
             item.add_argument("number", type=int)
         item.add_argument("--body-file", required=True)

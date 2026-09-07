@@ -1,87 +1,15 @@
 {
-  "schema_version": 1,
+  "skill": "review-repo",
+  "protocol": "issue-pr-health-eval-v1",
   "cases": [
-    {
-      "id": "prd_code_conflict",
-      "scenario": "PRD and EDD require local-first private note storage, while implementation sends every note to a remote service before saving.",
-      "required_findings": [
-        {
-          "category_any": ["PRD Compliance", "EDD Compliance"],
-          "evidence_all": ["docs/PRD.md", "src/store.py"]
-        }
-      ]
-    },
-    {
-      "id": "edd_dependency_violation",
-      "scenario": "The domain layer directly imports and constructs an infrastructure adapter forbidden by EDD dependency rules.",
-      "required_findings": [
-        {
-          "category_any": ["Architecture Drift", "EDD Compliance"],
-          "evidence_all": ["docs/EDD.md", "src/domain/orders.py"]
-        }
-      ]
-    },
-    {
-      "id": "milestone_scope_creep",
-      "scenario": "The current milestone names telemetry as a non-goal, but implementation always sends analytics events.",
-      "required_findings": [
-        {
-          "category_any": ["Milestone Compliance", "PRD Compliance"],
-          "evidence_all": ["docs/milestones/m1.md", "src/analytics.py"]
-        }
-      ]
-    },
-    {
-      "id": "many_tests_missing_contract",
-      "scenario": "Many passing arithmetic tests coexist with an unimplemented and untested idempotency contract.",
-      "required_findings": [
-        {
-          "category_any": ["Test Adequacy"],
-          "evidence_all": ["docs/milestones/m1.md", "tests/test_math.py"]
-        }
-      ]
-    },
-    {
-      "id": "stale_readme_truth_correct",
-      "scenario": "PRD, EDD, implementation, and tests agree on SQLite persistence; README incorrectly says data is memory-only.",
-      "required_findings": [
-        {
-          "category_any": ["Derived Documentation Drift"],
-          "evidence_all": ["README.md", "docs/EDD.md", "src/store.py"]
-        }
-      ]
-    },
-    {
-      "id": "unnecessary_agent_infra",
-      "scenario": "A tiny offline calculator adds an unused release skill and broad remote project-admin MCP configuration.",
-      "required_findings": [
-        {
-          "category_any": ["Agent Infrastructure", "Accidental Complexity"],
-          "evidence_all": ["docs/PRD.md", ".agents/skills/release-orchestrator/SKILL.md", ".mcp.json"]
-        }
-      ]
-    },
-    {
-      "id": "healthy_repo",
-      "scenario": "A small local todo repository aligns PRD, EDD, milestone, implementation, tests, and README.",
-      "required_findings": [],
-      "max_findings": 0
-    },
-    {
-      "id": "progressive_disclosure_correct",
-      "scenario": "EDD remains the engineering hub and links to an extracted storage design with matching semantics and a complete structural log.",
-      "required_findings": [],
-      "max_findings": 0
-    },
-    {
-      "id": "progressive_disclosure_conflict",
-      "scenario": "EDD and an extracted document both claim authority but specify contradictory storage designs, while the structural log claims no semantic change.",
-      "required_findings": [
-        {
-          "category_any": ["Source-of-Truth Ambiguity", "Derived Documentation Drift"],
-          "evidence_all": ["docs/EDD.md", "docs/architecture/storage.md", "docs/structural-change-log.md"]
-        }
-      ]
-    }
+    {"id": "prd_code_conflict", "scenario": "Accepted code sends telemetry although the PRD requires local-only behavior.", "required_findings": [{"category_any": ["PRD Compliance"], "evidence_all": ["docs/PRD.md", "src/timer.py"]}], "candidate": {"eligible": true}},
+    {"id": "edd_dependency_violation", "scenario": "Accepted code reverses the EDD dependency direction.", "required_findings": [{"category_any": ["EDD Compliance", "Architecture Drift"], "evidence_all": ["docs/EDD.md", "src/domain.py"]}], "candidate": {"eligible": true}},
+    {"id": "closed_issue_acceptance_gap", "scenario": "A closed Issue and merged PR claim retry idempotency, but code and tests do not implement it.", "required_findings": [{"category_any": ["Work Contract Compliance"], "evidence_all": [".github/issues/12.md", ".github/pulls/18.md", "src/payment.py"]}], "candidate": {"eligible": false}},
+    {"id": "pr_provenance_gap", "scenario": "A material accepted behavior change has no reconstructible Issue or PR handoff.", "required_findings": [{"category_any": ["Delivery Provenance"], "evidence_all": ["docs/PRD.md", "src/export.py"]}], "candidate": {"eligible": true}},
+    {"id": "cross_pr_architecture_drift", "scenario": "Two merged PRs cumulatively create a forbidden bidirectional dependency.", "required_report_evidence_all": [".github/pulls/21.md", ".github/pulls/22.md", "src/api.py", "src/storage.py"], "required_categories_all": ["Work Contract Compliance", "Delivery Provenance"], "candidate": {"eligible": true}},
+    {"id": "stale_readme", "scenario": "README contradicts accepted persistent-storage behavior.", "required_findings": [{"category_any": ["Derived Documentation Drift"], "evidence_all": ["README.md", "src/store.py"]}], "candidate": {"eligible": true}},
+    {"id": "semantic_ambiguity", "scenario": "PRD and EDD disagree on deletion semantics; review must not auto-escalate a design choice.", "required_findings": [{"category_any": ["Source-of-Truth Ambiguity"], "evidence_all": ["docs/PRD.md", "docs/EDD.md"]}], "candidate": {"eligible": false}},
+    {"id": "unnecessary_agent_infra", "scenario": "A local utility commits broad remote release orchestration not justified by product or design.", "required_findings": [{"category_any": ["Agent Infrastructure"], "evidence_all": ["docs/EDD.md", ".mcp.json"]}]},
+    {"id": "healthy_repo", "scenario": "PRD, EDD, Issue, PR, code, tests, and README align.", "required_findings": [], "max_findings": 0}
   ]
 }

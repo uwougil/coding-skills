@@ -42,4 +42,4 @@ Applied here: the reviewer resolves the applicable `AGENTS.md` / override chain 
 
 ## Scope note
 
-These pages describe host capabilities and conventions, not a semantic repository-review oracle. The review method in this skill therefore treats PRD/EDD/milestones as project-specific authority, checks implementation and verification evidence, and escalates unresolved semantic disagreement instead of inventing a design.
+These pages describe host capabilities and conventions, not a semantic repository-review oracle. The review method therefore treats PRD/EDD as human-owned semantic authority, Issues as Work Contracts, PRs as Delivery/Handoff evidence, and unresolved semantic disagreement as a human decision rather than an invented design.

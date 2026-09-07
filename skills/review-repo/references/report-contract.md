@@ -1,76 +1,36 @@
-# Report Contract
+# Report contract
 
-Use this contract to keep reports prioritized, reproducible, and resistant to finding inflation.
+## Findings
 
-## Severity
+Order findings by severity: Critical, High, Medium, Low. Each finding must include title, category, direct evidence, expected behavior, actual behavior, consequence, bounded action, and confidence.
 
-- **Critical:** A broadly reachable defect can cause catastrophic security/privacy loss, irreversible data loss, or complete failure of a defining product guarantee. Use sparingly.
-- **High:** A core PRD promise, milestone acceptance criterion, architecture boundary, or security/privacy control is materially violated in supported use.
-- **Medium:** A real gap creates bounded incorrect behavior, meaningful maintenance/operational risk, or inadequate verification, but does not defeat the product's defining path.
-- **Low:** A confirmed, limited issue worth addressing that has small impact. Omit low-value style and preference comments.
+Copy repository-relative evidence paths exactly, including leading dots in hidden directories such as `.github/`.
 
-Severity describes impact and reach, not review confidence.
+Use these categories when possible: PRD Compliance, EDD Compliance, Work Contract Compliance, Delivery Provenance, Architecture Drift, Test Adequacy, Derived Documentation Drift, Agent Infrastructure, Accidental Complexity, Source-of-Truth Ambiguity.
 
-## Categories
+Use `Work Contract Compliance` for a closed Issue whose acceptance criteria are missing from accepted code or tests. Use `Delivery Provenance` when a repository rule requires an Issue/PR chain for a material accepted change and that chain cannot be reconstructed. Record related PRD/EDD effects in status fields instead of duplicating one root cause across categories.
 
-Use one primary category per finding:
+Severity reflects consequence, not volume:
 
-- `PRD Compliance`
-- `EDD Compliance`
-- `Milestone Compliance`
-- `Architecture Drift`
-- `Test Adequacy`
-- `Derived Documentation Drift`
-- `Agent Infrastructure`
-- `Accidental Complexity`
-- `Source-of-Truth Ambiguity`
+- **Critical:** immediate severe security, privacy, irreversible-data, or broadly exploitable integrity failure.
+- **High:** a core product promise, accepted Issue criterion, architecture boundary, or critical operational control is materially violated.
+- **Medium:** a supported secondary path, verification guarantee, provenance chain, or maintainability boundary is materially weakened.
+- **Low:** bounded real inconsistency with limited current impact.
 
-Mention secondary dimensions in the explanation instead of duplicating the finding.
+## Status summaries
 
-## Finding shape
+Use `compliant`, `partially compliant`, `non-compliant`, `ambiguous`, or `not assessable`, followed by concise evidence, for:
 
-```markdown
-### [High] Short consequence-oriented title
+- PRD status;
+- EDD status;
+- Issue/PR provenance status.
 
-- Severity: High
-- Category: PRD Compliance
-- Evidence: `docs/PRD.md:18-24`; `src/store.py:41-58` (`save_note`); `tests/test_store.py:73`
-- Expected behavior: The PRD requires all note creation to work offline and forbids a mandatory remote dependency.
-- Actual behavior: `save_note` always posts to the configured API before returning; the test replaces the network call with a mock.
-- Why it matters: A supported offline user cannot create a note, and content crosses a boundary the product promise excludes.
-- Recommended action: Make the local store authoritative and move synchronization behind an explicit optional adapter, or obtain and record an approved PRD/EDD change.
-- Confidence: High
-```
+Also state test confidence, architecture status, derived-document status, and agent-infrastructure assessment. Missing artifacts alone are not fabricated non-compliance.
 
-Evidence may span multiple paths, but keep the range tight. Use `Confidence: High | Medium | Low`. Lower confidence when behavior depends on an unobserved runtime, missing generated artifact, or an inference that could not be executed.
+## Issue candidates
 
-## Status vocabulary
+For every finding considered for Issue creation, record its title, eligibility, and reason. Eligibility requires all six review-finding gates. Ambiguity, duplicates, low confidence, and semantic PRD/EDD changes must be ineligible.
 
-For PRD, EDD, and milestone status, use:
+## No-finding result
 
-- `Compliant in reviewed scope`
-- `Partially compliant`
-- `Non-compliant`
-- `Unable to assess`
-- `Not applicable to reviewed scope`
-
-State the reviewed scope and the strongest evidence or gap in one or two sentences. Do not convert missing PRD/EDD/milestone files into fabricated compliance findings.
-
-For tests, architecture, documentation, and agent infrastructure, give calibrated prose and explicitly distinguish inspected evidence from executed checks.
-
-## Required report order
-
-1. **Executive Summary** — scope, overall conclusion, top risks, and important limits.
-2. **Critical/High findings** — say `None` when there are none.
-3. **Medium findings** — say `None` when there are none.
-4. **Low findings** — include only useful items; otherwise say `None reported`.
-5. **PRD compliance status**
-6. **EDD compliance status**
-7. **Milestone compliance status**
-8. **Test confidence**
-9. **Architecture drift status**
-10. **Derived-doc drift status**
-11. **Agent infrastructure assessment**
-12. **Recommended next actions** — ordered by risk reduction and decision dependency.
-
-Do not hide a High finding in a summary table only. Do not repeat one root cause under several dimensions. When there are no substantive findings, state that clearly and explain the evidence and review limits that support the conclusion.
+If no substantive finding passes the threshold, say so explicitly, summarize inspected evidence and verification limits, and do not manufacture low-value advice.

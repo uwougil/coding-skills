@@ -1,7 +1,0 @@
-interface:
-  display_name: "Implement Milestone"
-  short_description: "Implement milestones under PRD and EDD constraints"
-  default_prompt: "Use $implement-milestone to implement docs/milestones/<milestone>.md as the execution contract."
-
-policy:
-  allow_implicit_invocation: true

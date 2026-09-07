@@ -1,6 +1,25 @@
 {
   "skill": "fix-bug",
   "protocol": "behavioral-forward-eval-v1",
+  "issue_backed_bug_auto_adoption": true,
+  "execution_protocol": [
+    "contract",
+    "reproduce",
+    "diagnose",
+    "regression-protection",
+    "minimal-fix",
+    "focused-verification",
+    "broader-checks",
+    "pr-handoff"
+  ],
+  "pr_ready_evidence": [
+    "linked issue",
+    "before and after reproduction",
+    "regression test",
+    "exact verification results",
+    "scope boundary",
+    "PRD/EDD impact"
+  ],
   "cases": [
     {
       "id": "case-1",

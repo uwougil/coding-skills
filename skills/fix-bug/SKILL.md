@@ -1,6 +1,6 @@
 ---
 name: fix-bug
-description: "Repair software defects with an evidence-first protocol: establish the contract, classify the failure, reproduce it, diagnose root cause, add regression protection, make the minimal correct fix, and verify from focused checks to broader regressions. Use for bug reports, regressions, failing tests, runtime errors, stack traces, or incorrect behavior; do not use for planned features or speculative refactors."
+description: "Execute bug work with an evidence-first, Issue-backed protocol: establish the contract, reproduce, diagnose root cause, add regression protection, make the minimal correct fix, and produce PR-ready verification evidence. Automatically adopt this protocol when a linked Issue is typed bug. Do not use for planned features or speculative refactors."
 metadata:
   short-description: "Evidence-first bug repair"
 ---
@@ -9,19 +9,25 @@ metadata:
 
 Use an evidence-first repair protocol. The user's instructions take precedence over this skill. Preserve the user's requested scope: a request to diagnose, review, or explain does not authorize edits; a request to fix authorizes the affected code, tests, and ordinary verification, but not unrelated redesign.
 
+Automatically adopt this protocol when the active Work Contract is a GitHub Issue whose exact type is `bug`, even when the user does not name the skill. For an untyped report, classify it first; do not relabel feature work as a bug to bypass its acceptance contract.
+
 Follow this sequence and do not patch before the first four gates are satisfied:
 
 > reproduce -> prove -> diagnose -> regression test -> minimal fix -> verify -> broader regression check
 
 If a gate is infeasible, state why, use the strongest available substitute, and preserve the limitation in the final report. Never silently skip a gate.
 
+## Scope boundary
+
+This skill owns debugging semantics. It does not own task scheduling, branch or worktree orchestration, generic feature implementation, merge coordination, or repository-wide review. The host coding agent may perform ordinary Git/GitHub and Pull Request operations using the evidence this protocol produces.
+
 ## 1. Establish the contract and local context
 
 Before changing code:
 
 1. Discover and read every `AGENTS.md` whose scope covers the affected files.
-2. Locate and read the relevant PRD and EDD sections, plus the relevant Milestone when one exists. Read targeted sections first; expand only when cross-references require it.
-3. Read the affected source and tests, along with the issue, logs, stack trace, and user reproduction steps that are available.
+2. Read the linked Issue first when one exists. Treat its accepted scope, acceptance criteria, and validation notes as the Work Contract; then locate the relevant PRD and EDD sections that govern product and architecture semantics.
+3. Read the affected source and tests, along with logs, stack trace, recent linked PR context, and user reproduction steps that are available.
 4. Inspect repository status and preserve pre-existing user changes.
 5. State the expected behavior, observed behavior, and the contract evidence that distinguishes them.
 
@@ -80,6 +86,7 @@ After the patch:
 5. Decide from blast radius whether the full suite or end-to-end tests are warranted.
 6. Run applicable lint, type, and build checks.
 7. Inspect the final diff and status for minimality and unrelated changes.
+8. Assemble PR-ready evidence: linked Issue, before/after reproduction, regression test, commands and outcomes, scope boundary, and any PRD/EDD impact.
 
 Read [verification-and-reporting.md](references/verification-and-reporting.md) for cross-component, async/concurrency, dependency/platform, data-format, or otherwise high-blast-radius fixes. Report every material check as passed, failed, or not run with a reason; distinguish unrelated pre-existing failures without hiding them.
 
@@ -92,6 +99,7 @@ Lead with the outcome, then include:
 - root cause;
 - regression protection and minimal fix;
 - verification commands/results, including broader checks;
+- the Issue acceptance criteria satisfied and the PR handoff evidence;
 - residual risks, limitations, or required Source-of-Truth decision.
 
 Do not call the issue fixed if the original reproduction or essential regression test is still failing.

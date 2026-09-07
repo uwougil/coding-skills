@@ -46,3 +46,7 @@ Find the workflow run associated with the pushed branch or commit rather than as
 Wait for a bounded period appropriate to the repository. If a run remains queued or in progress, report the real status and a direct command or link for continuing the check; do not claim completion. If CI fails, inspect failed logs, fix in-scope defects, rerun local checks, push a focused correction, and verify the new run. Do not weaken CI merely to obtain green status.
 
 Official reference: https://cli.github.com/manual/gh_run
+
+## PR-first follow-up delivery
+
+Repository birth may push the initial default branch directly. Subsequent Issue-backed or cross-agent changes should normally use an isolated branch or worktree and a Pull Request. The PR should link its Issue when one exists and summarize changes, verification, and PRD/EDD impact. Do not merge while required CI or task-local review is failing; routine PR creation, repair, merge, and Issue closure remain host-agent and GitHub responsibilities rather than separate skills.

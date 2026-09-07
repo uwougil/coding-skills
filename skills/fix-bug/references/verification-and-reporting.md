@@ -45,7 +45,7 @@ Keep enough detail to distinguish observation from inference:
 
 | Phase | Record |
 | --- | --- |
-| Contract | Source paths/sections and the derived expected behavior |
+| Contract | Issue acceptance criteria, PRD/EDD paths or sections, and the derived expected behavior |
 | Baseline | Command or steps, inputs, environment facts, exit status, and relevant output |
 | Classification | Category and the evidence that rules out nearby alternatives |
 | Diagnosis | Trigger, first invalid state, violated invariant, and root cause |
@@ -58,7 +58,7 @@ Use `scripts/capture_repro.py` when preserving exact command evidence materially
 
 ## Completion report
 
-Lead with one of these accurate outcomes: **fixed and verified**, **diagnosed but not changed**, **partially verified**, or **blocked on contract/architecture**. Then state:
+Lead with one of these accurate outcomes: **fixed and PR-ready**, **diagnosed but not changed**, **partially verified**, or **blocked on contract/architecture**. Then state:
 
 1. **Classification and contract:** the category and decisive PRD/EDD or other authoritative evidence.
 2. **Reproduction:** the before-fix command/steps and observed failure.
@@ -66,5 +66,6 @@ Lead with one of these accurate outcomes: **fixed and verified**, **diagnosed bu
 4. **Repair:** the minimal implementation/configuration/test change and regression protection.
 5. **Verification:** focused and broader checks with concrete results.
 6. **Residual:** skipped checks with reasons, remaining risk, or exact decision needed.
+7. **PR handoff:** linked Issue, acceptance-criteria mapping, changed surface, and whether PRD/EDD semantics changed.
 
 Never use “all tests pass” when only a subset ran. Never use “fixed” when the original reproduction or essential regression test still fails.

@@ -1,41 +1,46 @@
 # coding-skills
 
-一个可直接复用的 Codex skills 集合，收录五个围绕软件仓库工作的 skill：
+一个面向 Agent 工程协作的四 skill 协议库：长期意图由人维护，GitHub Issue 承载工作契约，Pull Request 承载交付与跨 Agent 移交，Git 默认分支表示已接受的实现现实。
 
-| Skill | 用途 |
+```text
+PRD / EDD → create-issue → Issue → builder / fix-bug → PR → CI + task-local review → main
+                                                                    ↓
+                         create-issue ← material finding ← review-repo automation
+```
+
+| Skill | 稳定职责 |
 | --- | --- |
-| [`bootstrap-repo`](skills/bootstrap-repo/) | 从 PRD、EDD 和 milestone 引导仓库，并完成验证与 GitHub 发布 |
-| [`implement-milestone`](skills/implement-milestone/) | 在既定 PRD/EDD 约束下实现一个 milestone |
-| [`fix-bug`](skills/fix-bug/) | 按“复现—证明—诊断—回归保护—最小修复—验证”修复缺陷 |
-| [`review-repo`](skills/review-repo/) | 审计 Intent → Design → Execution → Implementation → Verification 的纵向一致性 |
-| [`create-issue`](skills/create-issue/) | 将已确定的对话意图编译为 repository-aware GitHub Issue，并处理 duplicate 与 PRD/EDD 冲突 |
+| [`bootstrap-repo`](skills/bootstrap-repo/) | 建立或安全演进仓库：PRD/EDD、源码、测试、CI、GitHub 和 PR-first 协作约定 |
+| [`create-issue`](skills/create-issue/) | 将已确定的人类意图或高置信度仓库审查 finding 编译为 GitHub Issue |
+| [`fix-bug`](skills/fix-bug/) | 为 bug 工作提供 evidence-first 调试与 PR-ready 验证协议 |
+| [`review-repo`](skills/review-repo/) | 作为独立自动化审查协议，检查多次变更后仓库的语义健康度 |
 
-## 安装
+`docs/PRD.md` 和 `docs/EDD.md` 是人维护的长期产品与工程意图。Issue 是可独立理解的 Work Contract；PR 是标准 Delivery / Handoff Contract。分支、worktree、提交、推送、PR、CI 修复、普通合并与 Issue 关闭由具备能力的宿主 Agent 和 Git/GitHub 完成，不需要额外的编排 skill。
 
-将所需 skill 目录复制到 Codex 的个人 skill 目录即可：
+## 安装与发现
+
+将需要的目录复制到个人或项目 skill 目录：
 
 ```text
 skills/<skill-name>/  ->  ~/.agents/skills/<skill-name>/
 ```
 
-在 Codex 中可使用 `$skill-name` 调用，例如 `$review-repo`。每个 skill 的 `SKILL.md` 是入口；`references/`、`scripts/` 和 `evals/` 是按需使用的配套资源。
+每个 `SKILL.md` 是入口，`references/`、`scripts/` 和 `evals/` 是按需资源。`.agents/skills/create-issue/` 是 `skills/create-issue/` 的字节级同步镜像，使本仓库内的 `$create-issue` 可被自动发现。
 
-本仓库还为 `create-issue` 提供仓库级自动发现入口：`.agents/skills/create-issue/` 是 `skills/create-issue/` 的同步镜像。将 Codex 的工作目录设为本仓库根目录（或其子目录）后，重启 Codex 即可直接使用 `$create-issue`；也可以继续按上面的方式复制独立 skill 包。
+## 验证
 
-## 本地验证
-
-本仓库只依赖 Python 标准库：
+CI 与本地运行相同的确定性检查：
 
 ```bash
 python scripts/validate_skills.py
+python scripts/test_protocol_contracts.py
 python skills/bootstrap-repo/scripts/test_inspect_repo.py
-python skills/implement-milestone/scripts/tests/test_contract_snapshot.py
-python skills/create-issue/scripts/gh_issue.py --help
 python skills/create-issue/scripts/test_gh_issue.py
+python skills/fix-bug/scripts/capture_repro.py --help
+python skills/review-repo/scripts/repo_inventory.py --help
+python skills/review-repo/evals/build_fixtures.py
 ```
 
-需要可用 Codex CLI 和对应服务时，可额外运行 `python skills/implement-milestone/scripts/run_behavior_evals.py` 做模型行为评测。该评测可能受服务配额和模型输出变化影响，因此不会在普通 CI 中自动启动。`review-repo` 的评测定义与已保存的结构化结果位于 `skills/review-repo/evals/`。
+需要可用 Codex CLI 和服务时，可额外运行 `python skills/review-repo/evals/run_evals.py --rebuild`。模型行为评测会受配额与模型变化影响，因此不作为普通 CI 的确定性门禁。
 
-## 仓库边界
-
-这里只发布五个 skill 包，不包含本机 Codex 配置、凭据、缓存、Python 字节码、临时评测工作目录或原始评测日志。
+本仓库不包含凭据、缓存、临时评测工作区、原始模型日志，也不引入 workflow engine、任务调度器、PR/CI/merge manager 或 Agent 专用消息总线。

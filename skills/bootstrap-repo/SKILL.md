@@ -1,87 +1,67 @@
 ---
 name: bootstrap-repo
-description: Bootstrap or safely evolve a software repository from PRD, EDD, and milestone intent through research, clarification, implementation, validation, GitHub publication, and CI verification. Use for new-repository materialization or non-destructive re-bootstrap; not for generic scaffolding without these intent sources.
+description: Bootstrap or safely evolve a software repository from human-maintained PRD and EDD intent through implementation, validation, GitHub publication, and a PR-first cross-agent delivery policy. Use for repository birth or non-destructive re-bootstrap; not for ordinary feature execution.
 ---
 
 # Bootstrap a Repository
 
-Compile product intent into a minimum viable architecture that runs, tests, and can be maintained by agents and humans. Finish a new-repository run only after publishing the repository to the user's GitHub account and checking the first CI run, unless authentication, permissions, or an explicitly requested dry run prevents publication.
+Establish the smallest repository in which humans and coding agents can work autonomously through standard filesystem, Git, GitHub Issue, Pull Request, and CI artifacts.
 
-## Preserve the Intent Model
+## Preserve the intent model
 
-Treat these human-maintained documents as the canonical intent sources:
+Treat these as human-maintained canonical contracts:
 
-- `docs/PRD.md`: product intent
-- `docs/EDD.md`: engineering intent
-- `docs/milestones/*.md`: execution intent
+- `docs/PRD.md`: Product Intent
+- `docs/EDD.md`: Engineering Intent
 
-Locate and use equivalent user-supplied drafts when they have not yet been placed at those paths. Do not elevate README files, existing code, generated documentation, or stale project notes above these sources. Existing code is implementation evidence, not a higher-priority requirement.
+Locate equivalent drafts when they are not yet normalized. Implementation, tests, Issues, PRs, README, and current code are evidence or derived state; none silently changes PRD/EDD semantics. If the requested bootstrap requires a product or engineering semantic decision, stop that portion and ask the user to resolve it.
 
-When the sources conflict, identify the conflict and its impact. Resolve factual questions through research; ask the user only when the resolution changes product behavior, architecture, security, privacy, ownership, repository visibility, or another material preference. Record confirmed decisions in the appropriate intent source so the three-source model remains coherent.
+GitHub Issues become the persistent Work Contract layer after bootstrap. Pull Requests are the standard Delivery / Handoff Contract for Issue-backed work, and the default branch represents accepted implementation reality.
 
-## Start With Evidence
+## Start with evidence
 
-1. Read the three intent sources and applicable `AGENTS.md` instructions completely.
-2. Inspect the target directory, Git state, manifests, CI, external integrations, and existing agent infrastructure. Prefer the bundled read-only probe:
+1. Read PRD, EDD, and applicable `AGENTS.md` files completely.
+2. Inspect the target directory, Git state, manifests, CI, external integrations, and agent infrastructure. Prefer the bundled read-only probe:
 
    ```bash
    python <skill-dir>/scripts/inspect_repo.py --root <target-directory>
    ```
 
-3. Classify the run:
-   - **New bootstrap:** there is no meaningful implementation or repository history, or the user explicitly chose a new repository.
-   - **Existing re-bootstrap:** meaningful code, project configuration, history, or infrastructure already exists.
-4. Read [the detailed workflow](references/workflow.md). For an existing repository, take a baseline before editing and preserve unrelated or uncommitted work.
-5. Research the selected stack, current framework and dependency behavior, third-party integrations, and relevant agent capabilities using authoritative primary sources. Resolve discoverable facts before asking questions.
+3. Classify the run as a new bootstrap or an existing re-bootstrap.
+4. Read [the detailed workflow](references/workflow.md). Preserve unrelated or uncommitted work in an existing repository.
+5. Research only stack, dependency, integration, and GitHub facts that affect the current result, using primary sources.
 
-## Clarify Only Decisions
+## Clarify only material decisions
 
-After research, ask a small, prioritized set of questions only when the answer materially changes the result and cannot be inferred safely. Each question must include the discovered context, viable options, tradeoffs, a recommended default, and why the user must decide.
+Ask only when the answer cannot be inferred safely and changes product behavior, architecture, security/privacy, ownership, repository visibility, licensing, data handling, or destructive migration. Do not ask about routine conventions already determined by the EDD or ecosystem.
 
-Typical required decisions include unresolved product behavior, incompatible architecture branches, GitHub owner/name/visibility, licensing, data handling, authentication, and security boundaries. Do not ask about routine folder names, formatter defaults, test placement, or other decisions covered by the EDD or strong stack conventions.
+An explicit bootstrap request authorizes ordinary repository creation, validation, commit, and publication after required decisions are resolved. A dry run performs no mutation.
 
-Explicit invocation authorizes the ordinary repository-creation sequence for a new bootstrap once required parameters are resolved. Do not ask a second generic confirmation to create, commit, or push the repository. A request for a dry run is different: perform research, assessment, and a proposed project model, but make no local or remote mutations.
+## Establish minimal agent infrastructure
 
-## Assess Agent Infrastructure
+Read [agent infrastructure](references/agent-infrastructure.md) when agents, MCP, plugins, permissions, or recurring automation are in scope. Prefer standard Git/GitHub/CI capabilities. Do not add orchestration, worktree, PR, CI, merge, or task-local-review skills merely to automate ordinary delivery.
 
-Read [agent infrastructure](references/agent-infrastructure.md) when the project mentions agents, external systems, MCP, plugins, skills, permissions, or recurring automated workflows.
+Create or maintain a concise project `AGENTS.md` that establishes these invariants:
 
-Apply the minimal-infrastructure policy:
+- Issue-backed changes normally use an isolated branch or worktree and are delivered through a PR.
+- Another agent can reconstruct the handoff from PRD/EDD, linked Issue, commits, PR description/diff, tests, and CI—without private conversation state.
+- Required verification must pass before merge.
+- PRD/EDD semantic changes require explicit human resolution.
 
-- Add a project skill only for a repository-specific workflow that is recurring, multi-step, and benefits from a stable protocol.
-- Add project-scoped MCP only when Codex needs durable external tools or context that existing CLI, API, or plugin support cannot reasonably provide.
-- Install or create a plugin only when a mature plugin or distributable bundle clearly reduces ownership cost and the requirement is explicit or confirmed.
-- Add `AGENTS.md` with concise repository-specific setup, verification, and safety guidance. Add nested overrides only for genuinely different subtrees.
+When useful, add a lightweight PR template with Issue linkage, change summary, verification evidence, and PRD/EDD impact. Do not turn it into a bureaucratic checklist.
 
-Do not create agent infrastructure merely because the software uses agents.
+## Materialize conservatively
 
-## Materialize Conservatively
+For a new repository, implement the smallest complete structure implied by PRD/EDD: typically README, AGENTS, license decision, ignore/config examples, source, tests, CI, and ecosystem configuration. Do not create speculative architecture, services, documentation trees, or agent infrastructure.
 
-For a new repository, implement the smallest complete structure implied by the EDD. The usual baseline is README, `AGENTS.md`, license decision, `.gitignore`, `.env.example` when configuration exists, canonical intent documents, source, tests, narrowly useful scripts, CI, and language-specific project configuration. Adapt names and layout to the ecosystem; never force Python conventions onto another stack.
+For an existing repository, perform delta analysis and make additive, minimal changes. Do not reinitialize, mass-format, replace a working toolchain, rewrite history, or create a duplicate remote.
 
-Do not pre-create empty architecture, decision, interface, schema, benchmark, example, Docker, or packaging trees. Create components such as API, database, frontend, extension, or desktop runtime only when current intent requires them.
+## Validate, publish, and verify
 
-For an existing repository, perform delta analysis and make additive, minimal patches. Never empty, reinitialize, mass-reformat, or overwrite the project. Do not replace a working toolchain simply to match a preferred template. Stage and commit only the intended bootstrap changes.
+Read [validation](references/validation.md) before declaring local completion and [GitHub publication](references/github.md) before creating or changing a remote.
 
-Maintain README, `AGENTS.md`, ignore/config examples, source, tests, scripts, CI, derived docs, schemas, and release metadata as agent/tooling-owned projections of intent. Do not introduce another human source of truth such as `ROADMAP.md`, `PROJECT_STATE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, or `glossary.md` unless the project explicitly needs it.
+Completion requires actual setup/build/test quality gates, CI parity, secret review, intended Git status, verified GitHub identity, a pushed default branch, and a checked first CI run. Prefer CI on Pull Requests plus appropriate default-branch pushes. Never claim publication or CI success without evidence.
 
-## Validate, Publish, Verify
+## Maintain the skill
 
-Read [validation](references/validation.md) before declaring the local repository complete. Fix failures and rerun relevant checks. Then read [GitHub publication](references/github.md) for new repositories or repositories that need a remote.
-
-For a new bootstrap, complete this end state:
-
-1. The selected build/package configuration parses and setup succeeds.
-2. Basic tests and configured lint/format checks pass.
-3. CI is syntactically valid and mirrors the local checks.
-4. No secret or private credential is tracked.
-5. The Git working tree contains only expected changes.
-6. GitHub authentication and destination ownership are verified.
-7. The real GitHub repository exists, the remote is correct, and the default branch is pushed.
-8. The first GitHub Actions run is found and checked; wait for it when practical and bounded.
-
-Never claim publication or CI success from intended commands alone. If authentication or permission is missing, stop before the remote mutation, preserve the validated local repository, and state the exact authentication step needed. Never request a PAT, token, or secret in chat or in a tracked file.
-
-## Maintain the Skill
-
-When changing this skill, use [the evaluation cases](references/evaluation.md) to guard its cross-stack, non-destructive, minimal-infrastructure, and honest-publication behavior.
+When changing this protocol, use [the evaluation cases](references/evaluation.md). Preserve the two-contract intent model, PR-first cross-agent handoff, minimal infrastructure, non-destructive re-bootstrap, and honest publication claims.

@@ -1,4 +1,4 @@
 interface:
   display_name: "Repository Consistency Review"
-  short_description: "Audit intent, design, code, tests, and docs"
-  default_prompt: "Use $review-repo to audit this repository for intent-to-verification consistency."
+  short_description: "Audit repository health with Issue/PR provenance"
+  default_prompt: "Use $review-repo to independently audit this repository across PRD/EDD, Issues, PRs, accepted code, tests, CI, and docs."

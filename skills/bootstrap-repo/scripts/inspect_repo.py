@@ -136,15 +136,13 @@ def build_snapshot(root: Path) -> dict[str, Any]:
     canonical = {
         "prd": "docs/PRD.md" in file_set,
         "edd": "docs/EDD.md" in file_set,
-        "milestones": sorted(path for path in files if path.startswith("docs/milestones/") and path.lower().endswith(".md")),
     }
     draft_candidates = sorted(
         path
         for path in files
         if path.lower().endswith(".md")
-        and any(term in Path(path).stem.lower() for term in ("prd", "edd", "milestone", "requirements", "design"))
+        and any(term in Path(path).stem.lower() for term in ("prd", "edd", "requirements", "design"))
         and path not in {"docs/PRD.md", "docs/EDD.md"}
-        and not path.startswith("docs/milestones/")
     )
     stacks = {
         stack: [marker for marker in markers if marker in file_set]
@@ -169,6 +167,20 @@ def build_snapshot(root: Path) -> dict[str, Any]:
         "stack_markers": stacks,
         "source_file_count": len(source_files),
         "ci_workflows": workflows,
+        "delivery_contract": {
+            "pull_request_template": any(
+                path.lower() in {
+                    ".github/pull_request_template.md",
+                    "pull_request_template.md",
+                    "docs/pull_request_template.md",
+                }
+                or path.lower().startswith(".github/pull_request_template/")
+                for path in files
+            ),
+            "issue_templates": sorted(
+                path for path in files if path.lower().startswith(".github/issue_template/")
+            ),
+        },
         "agent_infrastructure": {
             "agents_md": "AGENTS.md" in file_set,
             "project_skills": sorted(path for path in files if path.startswith(".agents/skills/") and path.endswith("/SKILL.md")),

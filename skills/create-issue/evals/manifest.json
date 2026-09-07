@@ -1,16 +1,31 @@
 {
   "skill": "create-issue",
+  "source_modes": ["human-settled-intent", "review-finding"],
+  "types": ["bug", "feature", "enhancement"],
+  "review_finding_gate": [
+    "authoritative_expectation",
+    "direct_evidence",
+    "material_consequence",
+    "bounded_remedy",
+    "open_and_closed_duplicate_search",
+    "high_confidence"
+  ],
+  "semantic_guard": "no_unapproved_prd_edd_semantic_change",
   "cases": [
     "simple-feature",
     "enhancement",
     "bug",
-    "duplicate",
+    "duplicate-open-or-closed",
     "multiple-work-items",
     "prd-conflict",
     "edd-conflict",
     "rejected-ai-suggestion",
     "avoid-over-splitting",
-    "no-coding"
+    "no-coding",
+    "eligible-review-finding",
+    "uncertain-review-finding",
+    "review-finding-needs-intent-change",
+    "parallelism-hint-not-type"
   ],
-  "side_effect_policy": "Use a fixture repository or mocked gh for evaluation; never create live Issues as part of a dry-run."
+  "side_effect_policy": "Use fixtures or mocked gh for evaluation; dry-runs never create live Issues."
 }
