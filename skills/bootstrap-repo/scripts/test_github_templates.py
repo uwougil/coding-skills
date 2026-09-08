@@ -22,7 +22,9 @@ class GitHubTemplateTests(unittest.TestCase):
             script = root / ".github" / "scripts" / "issue-finalize.js"
 
             self.assertIn("Refs #<number>", template)
+            self.assertIn("one final delivery PR", template)
             self.assertIsNone(re.search(r"(?mi)^\s*(?:Closes|Fixes|Resolves)\s+#", template))
+            self.assertIsNone(re.search(r"(?mi)^\s*(?:Delivers|Completes)\s+#", template))
             self.assertIn('workflows: ["Build \\"and\\" Test"]', workflow)
             self.assertNotIn("__MAIN_CI_WORKFLOW_NAME__", workflow)
             self.assertTrue(script.is_file())

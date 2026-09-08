@@ -36,6 +36,34 @@ class ProtocolContractTests(unittest.TestCase):
             else:
                 self.assertIn(heading, template)
 
+    def test_one_issue_normally_maps_to_one_final_delivery_pr_across_layers(self) -> None:
+        paths = (
+            "README.md",
+            "AGENTS.md",
+            "docs/PRD.md",
+            "docs/EDD.md",
+            "skills/bootstrap-repo/SKILL.md",
+            "skills/bootstrap-repo/references/workflow.md",
+            "skills/create-issue/SKILL.md",
+            "skills/fix-bug/SKILL.md",
+            "skills/review-repo/SKILL.md",
+        )
+        for path in paths:
+            text = self.read(path).lower()
+            self.assertIn("issue", text, path)
+            if path == "README.md":
+                self.assertIn("可独立交付", self.read(path), path)
+                self.assertIn("最终交付 pr", text, path)
+            else:
+                self.assertIn("independently deliverable", text, path)
+                self.assertRegex(text, r"final delivery (?:pull request|pr)", path)
+
+        create_issue = self.read("skills/create-issue/SKILL.md").lower()
+        self.assertIn("revisit the issue boundary before writing", create_issue)
+        self.assertIn("multiple ordinary prs", create_issue)
+        review_repo = self.read("skills/review-repo/SKILL.md")
+        self.assertIn("Issue -> final delivery PR -> merge commit -> main -> Main CI -> closed Issue history", review_repo)
+
     def test_collaboration_language_policy_is_explicit_portable_and_preserves_technical_strings(self) -> None:
         agents = self.read("AGENTS.md")
         bootstrap = self.read("skills/bootstrap-repo/SKILL.md")
@@ -74,7 +102,7 @@ class ProtocolContractTests(unittest.TestCase):
         self.assertIn("Issue-backed changes normally use an isolated branch or worktree", skill)
         self.assertIn("without private conversation state", skill)
         self.assertIn("Required verification must pass before merge", skill)
-        self.assertIn("Issue → branch/worktree → implementation → commit → push → PR", workflow)
+        self.assertIn("Issue → branch/worktree → implementation → commit → push → final delivery PR", workflow)
 
     def test_bootstrap_main_ci_finalizes_linked_issues_without_merge_autoclose(self) -> None:
         skill = self.read("skills/bootstrap-repo/SKILL.md")
@@ -88,7 +116,12 @@ class ProtocolContractTests(unittest.TestCase):
 
         for template in (root_template, asset_template):
             self.assertIn("Refs #<number>", template)
+            if template is root_template:
+                self.assertIn("一个最终交付 PR", template)
+            else:
+                self.assertIn("One Issue is normally completed by one final delivery PR", template)
             self.assertIsNone(re.search(r"(?mi)^\s*(?:Closes|Fixes|Resolves)\s+#", template))
+            self.assertIsNone(re.search(r"(?mi)^\s*(?:Delivers|Completes)\s+#", template))
         for text in (skill, workflow_doc, finalization_doc):
             self.assertIn("merge", text.lower())
             self.assertIn("main ci", text.lower())
@@ -119,6 +152,43 @@ class ProtocolContractTests(unittest.TestCase):
             "github.paginate",
         ):
             self.assertIn(phrase, script)
+        self.assertNotIn("issues.delete", script)
+        self.assertNotIn("deleteIssue", script)
+
+    def test_only_refs_lines_can_link_and_no_completion_syntax_is_active(self) -> None:
+        protocol_paths = (
+            "AGENTS.md",
+            "docs/PRD.md",
+            "docs/EDD.md",
+            ".github/PULL_REQUEST_TEMPLATE.md",
+            "skills/bootstrap-repo/SKILL.md",
+            "skills/bootstrap-repo/references/workflow.md",
+            "skills/bootstrap-repo/references/github.md",
+            "skills/bootstrap-repo/references/issue-finalization.md",
+            "skills/bootstrap-repo/assets/github/PULL_REQUEST_TEMPLATE.md",
+            "skills/create-issue/SKILL.md",
+            "skills/fix-bug/SKILL.md",
+            "skills/review-repo/SKILL.md",
+        )
+        active_completion = re.compile(r"(?mi)^\s*(?:Closes|Fixes|Resolves|Delivers|Completes)\s+#\d+\s*$")
+        for path in protocol_paths:
+            text = self.read(path)
+            self.assertIsNone(active_completion.search(text), path)
+
+        parser = self.read("skills/bootstrap-repo/assets/github/scripts/issue-finalize.js")
+        self.assertIn(r"^\s*Refs\s+#([1-9]\d*)\s*$", parser)
+        self.assertNotRegex(parser, r"(?i)(?:delivers|completes|closes|fixes|resolves).*issueNumbers")
+
+    def test_merge_is_not_completion_and_main_ci_is_final_acceptance(self) -> None:
+        prd = self.read("docs/PRD.md")
+        agents = self.read("AGENTS.md")
+        finalization = self.read("skills/bootstrap-repo/references/issue-finalization.md")
+
+        self.assertIn("Merge admits implementation to the default branch but does not itself complete", prd)
+        self.assertIn("Main CI for the merged commit is the final automated acceptance gate", prd)
+        self.assertIn("Completed Issues remain preserved as closed history", prd)
+        self.assertIn("Merge means code entered the default branch, not that delivery is complete", agents)
+        self.assertIn("PR merge != Issue completion", finalization)
 
     def test_create_issue_semantic_manifest(self) -> None:
         manifest = json.loads(self.read("skills/create-issue/evals/manifest.json"))
@@ -132,6 +202,7 @@ class ProtocolContractTests(unittest.TestCase):
         self.assertIn("would change PRD/EDD semantics", skill)
         self.assertIn("do not create an Issue that chooses the design", skill)
         self.assertIn("search both open and closed Issues", skill)
+        self.assertIn("one final delivery Pull Request", skill)
 
     def test_create_issue_review_mode_has_parallelism_hints_not_types(self) -> None:
         skill = self.read("skills/create-issue/SKILL.md")
@@ -148,6 +219,7 @@ class ProtocolContractTests(unittest.TestCase):
         self.assertIn("reproduce -> prove -> diagnose -> regression test -> minimal fix -> verify -> broader regression check", skill)
         self.assertIn("does not own task scheduling", skill.lower())
         self.assertIn("repository-wide review", skill.lower())
+        self.assertIn("successful Main CI for the merged commit completes the Work Contract", skill)
 
     def test_review_repo_has_issue_pr_provenance_and_guard(self) -> None:
         skill = self.read("skills/review-repo/SKILL.md")
@@ -156,6 +228,8 @@ class ProtocolContractTests(unittest.TestCase):
         self.assertIn("six gates", skill)
         self.assertIn("issue_pr_provenance_status", schema["required"])
         self.assertIn("issue_candidates", schema["required"])
+        self.assertIn("successful Main CI evidence", skill)
+        self.assertIn("must not be deleted", skill)
 
     def test_review_repo_is_independent_and_source_read_only(self) -> None:
         skill = self.read("skills/review-repo/SKILL.md")

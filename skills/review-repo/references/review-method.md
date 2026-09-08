@@ -10,7 +10,7 @@ If the worktree is dirty, distinguish pre-existing changes from accepted `main` 
 
 For each important behavior or boundary, trace as much of this route as exists:
 
-`PRD/EDD -> Issue Work Contract -> PR Delivery/Handoff -> accepted commit/code -> tests and CI -> derived docs`
+`PRD/EDD -> independently deliverable Issue Work Contract -> final delivery PR -> merge commit -> main -> Main CI -> closed Issue history -> accepted code/tests/derived docs`
 
 Record missing links only when they prevent auditability, acceptance reconstruction, or safe maintenance. An old repository without historical Issue/PR metadata is not automatically defective.
 
@@ -22,11 +22,11 @@ Look across recent merged PRs for cumulative architecture changes that are harml
 
 ## Work-contract and delivery evidence
 
-For sampled open and closed Issues, inspect scope, acceptance criteria, validation notes, and semantic impact. For linked PRs, inspect the actual diff, tests, verification outcomes, contract-impact statement, review/CI state, and merge relationship.
+For sampled open and closed Issues, inspect scope, acceptance criteria, validation notes, and semantic impact. Verify that one Issue was independently deliverable and normally owned by one final delivery PR rather than completion responsibility spread across multiple ordinary PRs. For linked PRs, inspect the actual diff, tests, verification outcomes, contract-impact statement, review/CI state, exact merge commit, default-branch admission, and Main CI result.
 
 High-value gaps include:
 
-- a closed Issue whose acceptance criteria are not present in accepted code or tests;
+- a closed Issue without a credible final delivery PR and successful Main CI chain, or whose acceptance criteria are not present in accepted code or tests;
 - a merged PR with no reconstructible Work Contract for a material behavior change;
 - implementation that exceeds Issue scope or silently changes PRD/EDD semantics;
 - validation claims unsupported by commands, tests, or CI;

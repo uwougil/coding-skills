@@ -86,7 +86,7 @@ After the patch:
 5. Decide from blast radius whether the full suite or end-to-end tests are warranted.
 6. Run applicable lint, type, and build checks.
 7. Inspect the final diff and status for minimality and unrelated changes.
-8. Assemble PR-ready evidence: linked Issue, before/after reproduction, regression test, commands and outcomes, scope boundary, and any PRD/EDD impact. Use the repository's resolved collaboration language for human-facing handoff prose; preserve commands, errors, identifiers, paths, URLs, API names, and GitHub numbers verbatim.
+8. Assemble final-delivery-PR-ready evidence: linked Issue, before/after reproduction, regression test, commands and outcomes, scope boundary, and any PRD/EDD impact. One bug Issue is normally completed by this one final delivery PR; if the repair cannot reasonably preserve that independently deliverable boundary, stop and return to Issue intake instead of sharing completion responsibility across multiple ordinary PRs. Use the repository's resolved collaboration language for human-facing handoff prose; preserve commands, errors, identifiers, paths, URLs, API names, and GitHub numbers verbatim.
 
 Read [verification-and-reporting.md](references/verification-and-reporting.md) for cross-component, async/concurrency, dependency/platform, data-format, or otherwise high-blast-radius fixes. Report every material check as passed, failed, or not run with a reason; distinguish unrelated pre-existing failures without hiding them.
 
@@ -99,7 +99,8 @@ Lead with the outcome, then include:
 - root cause;
 - regression protection and minimal fix;
 - verification commands/results, including broader checks;
-- the Issue acceptance criteria satisfied and the PR handoff evidence;
+- the Issue acceptance criteria satisfied and the final delivery PR handoff evidence;
+- the post-merge acceptance rule: merge only admits code to the default branch, while successful Main CI for the merged commit completes the Work Contract;
 - residual risks, limitations, or required Source-of-Truth decision.
 
 Do not call the issue fixed if the original reproduction or essential regression test is still failing.

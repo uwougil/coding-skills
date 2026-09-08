@@ -11,17 +11,19 @@ Issue completion = successful Main CI for the merged commit
 
 Use exact standalone `Refs #N` lines in the PR body. They establish traceability without GitHub auto-closing the Issue. Agents must not substitute `Closes`, `Fixes`, or `Resolves`.
 
+Each Issue is one independently deliverable Work Contract and is normally completed by one final delivery PR. If one final PR cannot reasonably deliver the outcome, re-boundary the Issue before implementation; do not make multiple ordinary PRs share responsibility for Issue completion.
+
 The full lifecycle is:
 
 ```text
 Issue
 → isolated branch/worktree
 → implementation
-→ PR with Refs #N
+→ final delivery PR with Refs #N
 → PR CI
 → human or otherwise authorized merge
 → Main CI on the default-branch push
-→ success: completion comment + close each linked open Issue
+→ success: completion comment + close each linked open Issue as completed
 → non-success: failure comment + keep each linked open Issue
 ```
 
@@ -65,7 +67,7 @@ permissions:
 
 Resolve the merged PR with `repos.listPullRequestsAssociatedWithCommit`; never infer it from a commit message. Require an exact merge SHA and default-base match. Parse only standalone `Refs #N` lines, deduplicate numbers, fetch each target through the Issues API, and skip any response containing a `pull_request` field.
 
-For an open real Issue, create a comment containing a hidden marker keyed by workflow run ID, run attempt, Issue number, and outcome. Before commenting, search existing comments for that marker. On success, close the Issue with `state_reason: completed`; on every non-success conclusion, leave it open. Already closed Issues, direct pushes without an associated merged PR, and PRs without exact references exit without mutation.
+For an open real Issue, create a comment containing a hidden marker keyed by workflow run ID, run attempt, Issue number, and outcome. Before commenting, search existing comments for that marker. On success, close the Issue with `state_reason: completed`; on every non-success conclusion—including unknown future values—comment and leave it open. Never delete an Issue: closed Work Contracts remain durable history. Already closed Issues, direct pushes without an associated merged PR, and PRs without exact references exit without mutation.
 
 ## Existing repositories
 

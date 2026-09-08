@@ -1,9 +1,9 @@
 # coding-skills
 
-一个面向 Agent 工程协作的四 skill 协议库：长期意图由人维护，GitHub Issue 承载工作契约，Pull Request 承载交付与跨 Agent 移交，Git 默认分支表示已接受的实现现实，Main CI 是 Issue 完成的最终自动验收门槛。
+一个面向 Agent 工程协作的四 skill 协议库：长期意图由人维护，每个 GitHub Issue 是一个可独立交付的工作契约，通常由一个最终交付 Pull Request 承担交付与跨 Agent 移交；Git 默认分支表示已接受的实现现实，Main CI 是 Issue 完成的最终自动验收门槛。
 
 ```text
-PRD / EDD → create-issue → Issue → builder / fix-bug → PR (`Refs #N`) → PR CI → merge → main CI
+PRD / EDD → create-issue → Issue → builder / fix-bug → final delivery PR (`Refs #N`) → PR CI → merge → main CI
                                                                                                 ├─ success → comment + close Issue
                                                                                                 └─ non-success → comment + keep Issue open
 
@@ -17,7 +17,7 @@ PRD / EDD → create-issue → Issue → builder / fix-bug → PR (`Refs #N`) �
 | [`fix-bug`](skills/fix-bug/) | 为 bug 工作提供 evidence-first 调试与 PR-ready 验证协议 |
 | [`review-repo`](skills/review-repo/) | 作为独立自动化审查协议，检查多次变更后仓库的语义健康度 |
 
-`docs/PRD.md` 和 `docs/EDD.md` 是人维护的长期产品与工程意图。Issue 是可独立理解的 Work Contract；PR 是标准 Delivery / Handoff Contract。PR 使用 `Refs #N` 关联 Issue，merge 本身不会关闭 Issue；默认分支 Main CI 成功后，独立的 `issue-finalize.yml` 才会自动评论并关闭 Issue，非成功结果则评论并保持 Issue Open。分支、worktree、提交、推送、PR、CI 修复与普通合并仍由具备能力的宿主 Agent 和 Git/GitHub 完成，不需要额外的编排 skill。
+`docs/PRD.md` 和 `docs/EDD.md` 是人维护的长期产品与工程意图。每个 Issue 是可独立交付的 Work Contract，通常由一个最终交付 PR 负责完成，不让多个普通 PR 共同承担同一 Issue 的最终责任；若无法由一个最终 PR 合理交付，应先重新划定 Issue 边界。PR 使用 `Refs #N` 关联 Issue，merge 本身不会关闭 Issue；默认分支 Main CI 成功后，独立的 `issue-finalize.yml` 才会自动评论并以 `completed` 原因关闭 Issue，任意非成功结果则评论并保持 Issue Open。分支、worktree、提交、推送、PR、CI 修复与普通合并仍由具备能力的宿主 Agent 和 Git/GitHub 完成，不需要额外的编排 skill。
 
 `bootstrap-repo` 的新默认生命周期只自动应用于未来 bootstrap 或显式 re-bootstrap 的仓库。已有仓库需重新运行 bootstrap 的 GitHub 模板迁移，提供主 CI workflow 的准确 `name:`，审阅冲突后再使用 `--overwrite`；不会被本仓库更新自动改写。
 

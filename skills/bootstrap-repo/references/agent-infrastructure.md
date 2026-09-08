@@ -48,7 +48,7 @@ Keep root `AGENTS.md` concise and operational:
 - authoritative intent files and generated-file ownership;
 - setup, test, lint, format, build, and type-check commands that actually work;
 - architecture boundaries that agents could otherwise violate;
-- Issue-backed branch/worktree isolation, `Refs #N` PR delivery, reconstructible handoff evidence, required-verification merge gates, and the invariant that only Main CI success completes and closes a Work Contract;
+- one independently deliverable Work Contract per Issue, normally one final delivery PR per Issue, Issue-backed branch/worktree isolation, `Refs #N` linkage, reconstructible handoff evidence, required-verification merge gates, and the invariant that only Main CI success completes and closes a Work Contract;
 - secret-handling and external-mutation constraints;
 - any repository-specific completion checks.
 

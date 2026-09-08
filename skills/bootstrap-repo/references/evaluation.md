@@ -40,6 +40,8 @@ Input: an Issue-backed PR is merged after PR CI passes.
 
 Expected: the PR uses `Refs #N`; merge leaves the Issue open; only completed CI for a default-branch push invokes the separate finalizer. Success comments and closes each linked open real Issue. Failure, cancellation, timeout, or another non-success conclusion comments once per workflow attempt and keeps the Issue open. PR CI, direct pushes, missing exact references, closed Issues, and references to Pull Requests exit safely.
 
+The Issue is independently deliverable and normally has one final delivery PR. If the outcome would require multiple ordinary PRs to share completion responsibility, intake re-boundaries the Work Contract before implementation. Finalization never deletes the Issue.
+
 ## Pass criteria
 
 Cases pass only when two-contract intent authority, run classification, stack choice, PR-first handoff, Main-CI-gated Issue completion, infrastructure restraint, safety boundary, and claimed publication state are correct.
