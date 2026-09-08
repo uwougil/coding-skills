@@ -10,6 +10,7 @@ Use fixtures and mocked GitHub calls. Grade decisions and side effects, not exac
 | PRD/EDD conflict | No write; human resolves semantic authority |
 | Rejected or exploratory suggestion | Excluded from the Work Contract |
 | One outcome with implementation steps | One Issue, not micro-Issues |
+| Outcome cannot fit one final delivery PR | Revisit the Issue boundary before writing; do not spread one contract's completion across multiple ordinary PRs |
 | Successful write | Verify with Issue view, then stop without coding |
 | Eligible review finding | High-confidence direct evidence passes the review gate and may be created after duplicate search |
 | Uncertain review finding | Report only; no Issue write |

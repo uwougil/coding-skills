@@ -8,7 +8,7 @@ Copy repository-relative evidence paths exactly, including leading dots in hidde
 
 Use these categories when possible: PRD Compliance, EDD Compliance, Work Contract Compliance, Delivery Provenance, Architecture Drift, Test Adequacy, Derived Documentation Drift, Agent Infrastructure, Accidental Complexity, Source-of-Truth Ambiguity.
 
-Use `Work Contract Compliance` for a closed Issue whose acceptance criteria are missing from accepted code or tests. Use `Delivery Provenance` when a repository rule requires an Issue/PR chain for a material accepted change and that chain cannot be reconstructed. Record related PRD/EDD effects in status fields instead of duplicating one root cause across categories.
+Use `Work Contract Compliance` for a closed Issue without credible final delivery PR and successful Main CI evidence, or whose acceptance criteria are missing from accepted code or tests. Use `Delivery Provenance` when a repository rule requires an Issue-to-final-PR-to-main-to-Main-CI chain for a material accepted change and that chain cannot be reconstructed. Record related PRD/EDD effects in status fields instead of duplicating one root cause across categories.
 
 Severity reflects consequence, not volume:
 

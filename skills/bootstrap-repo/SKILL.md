@@ -16,7 +16,7 @@ Treat these as human-maintained canonical contracts:
 
 Locate equivalent drafts when they are not yet normalized. Implementation, tests, Issues, PRs, README, and current code are evidence or derived state; none silently changes PRD/EDD semantics. If the requested bootstrap requires a product or engineering semantic decision, stop that portion and ask the user to resolve it.
 
-GitHub Issues become the persistent Work Contract layer after bootstrap. Pull Requests are the standard Delivery / Handoff Contract for Issue-backed work, and the default branch represents accepted implementation reality. Merge is not completion: only successful CI for the merged commit on the default branch completes the Work Contract.
+GitHub Issues become the persistent Work Contract layer after bootstrap. Each Issue is one independently deliverable outcome, normally completed by one final delivery Pull Request rather than responsibility shared across multiple ordinary PRs. If one final PR cannot reasonably deliver the outcome, re-boundary the Issue before implementation. The default branch represents accepted implementation reality. Merge is not completion: only successful CI for the merged commit on the default branch completes the Work Contract.
 
 ## Resolve collaboration language
 
@@ -47,11 +47,12 @@ Read [agent infrastructure](references/agent-infrastructure.md) when agents, MCP
 
 Create or maintain a concise project `AGENTS.md` that establishes these invariants:
 
+- Each Issue is one independently deliverable Work Contract and is normally completed by one final delivery PR; re-boundary work that cannot reasonably satisfy that ownership model.
 - Issue-backed changes normally use an isolated branch or worktree and are delivered through a PR.
 - PRs link Issues with exact `Refs #N` lines; agents do not use `Closes`, `Fixes`, or `Resolves` because merge must not auto-close the Work Contract.
 - Another agent can reconstruct the handoff from PRD/EDD, linked Issue, commits, PR description/diff, tests, and CI—without private conversation state.
 - Required verification must pass before merge.
-- Merge only admits code to the default branch. Main CI success comments on and closes linked open Issues; every non-success conclusion comments and leaves them open.
+- Merge only admits code to the default branch. Main CI success for the merged commit comments on and closes linked open Issues with the `completed` state reason; every non-success conclusion comments and leaves them open.
 - PRD/EDD semantic changes require explicit human resolution.
 - Repository-facing artifacts use the resolved collaboration language and preserve technical strings verbatim.
 

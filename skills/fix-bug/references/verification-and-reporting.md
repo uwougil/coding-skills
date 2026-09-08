@@ -66,6 +66,6 @@ Lead with one of these accurate outcomes: **fixed and PR-ready**, **diagnosed bu
 4. **Repair:** the minimal implementation/configuration/test change and regression protection.
 5. **Verification:** focused and broader checks with concrete results.
 6. **Residual:** skipped checks with reasons, remaining risk, or exact decision needed.
-7. **PR handoff:** linked Issue, acceptance-criteria mapping, changed surface, and whether PRD/EDD semantics changed.
+7. **Final PR handoff:** linked Issue, acceptance-criteria mapping, changed surface, whether this is the one final delivery PR normally responsible for the Issue, and whether PRD/EDD semantics changed. State that merge admits code but only successful Main CI for the merged commit completes the Work Contract.
 
 Never use “all tests pass” when only a subset ran. Never use “fixed” when the original reproduction or essential regression test still fails.

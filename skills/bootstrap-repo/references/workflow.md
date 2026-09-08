@@ -16,7 +16,7 @@ Translate the two intent sources into a concise working model:
 
 Resolve the collaboration language before drafting those conventions or any repository-facing artifact. Use the precedence and technical-string preservation rule in the skill entrypoint; propagate the resolved language into `AGENTS.md`, the PR template, Issue text, PR text, review summaries, handoffs, and status updates. Keep this policy portable: a repository may use English, Chinese, or another language.
 
-Do not create another permanent planning document by default. GitHub Issues carry independently deliverable work after bootstrap. Record a confirmed product or engineering decision in PRD/EDD only when the human has explicitly resolved it.
+Do not create another permanent planning document by default. Each GitHub Issue carries one independently deliverable Work Contract after bootstrap and is normally completed by one final delivery PR. If the outcome cannot reasonably be delivered that way, re-boundary the Issue before implementation instead of spreading completion responsibility across multiple ordinary PRs. Record a confirmed product or engineering decision in PRD/EDD only when the human has explicitly resolved it.
 
 ## Research before questions
 
@@ -67,13 +67,13 @@ Do not create empty or future-facing trees just to match this example.
 Keep the project `AGENTS.md` concise, but make repository-visible handoff reconstructible. A normal later lifecycle is:
 
 ```text
-Issue → branch/worktree → implementation → commit → push → PR with Refs #N
+Issue → branch/worktree → implementation → commit → push → final delivery PR with Refs #N
       → PR CI + task-local review → repair → authorized merge → Main CI
       → success: comment + close Issue
       → non-success: comment + keep Issue open
 ```
 
-Merge is code admission, not Work Contract completion. Agents must not use GitHub auto-close keywords in PR bodies. The host coding agent and Git/GitHub own ordinary orchestration; the small post-Main-CI finalizer owns only status feedback and closure. Do not introduce a workflow engine or manager skill.
+One Issue normally has one final delivery PR; multiple ordinary PRs must not share responsibility for its completion. Merge is code admission, not Work Contract completion. Agents must not use GitHub auto-close keywords in PR bodies. The host coding agent and Git/GitHub own ordinary orchestration; the small post-Main-CI finalizer owns only status feedback and closure. Do not introduce a workflow engine or manager skill.
 
 ## Progressive disclosure of EDD
 

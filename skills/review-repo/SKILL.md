@@ -14,10 +14,10 @@ Perform an independent, evidence-backed repository health audit. The source tree
 Interpret evidence in this order:
 
 1. PRD defines accepted product behavior; EDD defines accepted architecture.
-2. An Issue is a bounded Work Contract. It may narrow work but cannot silently change PRD/EDD semantics.
-3. A PR is Delivery/Handoff evidence: scope, changes, validation, contract impact, review, and merge decision.
+2. An Issue is one independently deliverable, bounded Work Contract. It may narrow work but cannot silently change PRD/EDD semantics, and is normally completed by one final delivery PR rather than responsibility shared across multiple ordinary PRs.
+3. A final delivery PR is Delivery/Handoff evidence: scope, changes, validation, contract impact, review, and merge decision.
 4. `main` is accepted implementation reality, not an automatic override of PRD/EDD.
-5. Tests, CI, and derived docs are evidence about those contracts, not independent authorities.
+5. Tests, CI, and derived docs are evidence about those contracts, not independent authorities. Merge admits code to `main`; only successful Main CI for the merged commit completes the Work Contract.
 
 When semantic authorities conflict, report the ambiguity and request a human decision. Do not edit PRD/EDD, source, tests, or docs during a review.
 
@@ -27,12 +27,12 @@ When semantic authorities conflict, report the ambiguity and request a human dec
 2. Read all applicable `AGENTS.md` files.
 3. Build a bounded inventory with `scripts/repo_inventory.py` when it helps.
 4. Read relevant PRD/EDD sections, open and recently closed Issues, recent merged PRs, source, tests, CI, and derived docs. Use repository-visible Issue/PR artifacts when remote metadata is unavailable.
-5. Reconstruct important paths as `PRD/EDD -> Issue -> PR -> accepted code -> tests/CI/docs`.
+5. Reconstruct important paths as `PRD/EDD -> Issue -> final delivery PR -> merge commit -> main -> Main CI -> closed Issue history`, then connect accepted code, tests, and derived docs.
 6. Inspect architecture drift across multiple accepted PRs, not only the latest diff.
 7. Run safe read-only verification when available; record unavailable evidence precisely.
 8. Report only substantive findings that pass the threshold below.
 
-Classify a closed-Issue acceptance failure as `Work Contract Compliance` even when it also violates PRD/EDD; use the status summaries to record the wider contract impact without duplicating the finding.
+Classify a closed Issue without credible final delivery PR and successful Main CI evidence, or with unmet acceptance criteria in accepted code/tests, as `Work Contract Compliance` even when it also violates PRD/EDD. A closed Issue remains historical evidence and must not be deleted; use the status summaries to record wider contract impact without duplicating the finding.
 
 Read [review-method.md](references/review-method.md) for progressive inspection and [report-contract.md](references/report-contract.md) before producing the final report.
 

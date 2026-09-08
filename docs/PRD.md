@@ -18,9 +18,9 @@ Users can establish a maintainable repository, turn settled work into GitHub Iss
 ## Durable contracts
 
 - Humans maintain `docs/PRD.md` as Product Intent and `docs/EDD.md` as Engineering Intent.
-- GitHub Issues represent independently understandable `bug`, `feature`, or `enhancement` Work Contracts.
-- Pull Requests represent Delivery / Handoff Contracts, carrying enough repository-visible evidence for another agent to review or continue the work. They link Issues with `Refs #N`; merge does not itself complete or close a Work Contract.
-- Main CI on the default branch is the final automated acceptance gate. Success comments on and closes each still-open linked Issue; any non-success conclusion comments and keeps the Issue open for follow-up.
+- Each GitHub Issue represents one independently deliverable `bug`, `feature`, or `enhancement` Work Contract. Work that cannot reasonably be delivered by one final Pull Request must be re-bounded before implementation.
+- One Issue is normally completed by one final delivery Pull Request; multiple ordinary PRs do not share responsibility for completing the same Issue. The final PR carries enough repository-visible Delivery / Handoff evidence for another agent to review or continue the work and links the Issue with `Refs #N`.
+- Merge admits implementation to the default branch but does not itself complete or close a Work Contract. Main CI for the merged commit is the final automated acceptance gate: success comments on and closes each still-open linked Issue with the `completed` state reason; any non-success conclusion comments and keeps the Issue open for follow-up. Completed Issues remain preserved as closed history.
 - The default branch represents accepted implementation reality but does not silently supersede PRD/EDD.
 
 ## Scope

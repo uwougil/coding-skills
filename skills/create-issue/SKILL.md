@@ -7,7 +7,7 @@ metadata:
 
 # Create Issue
 
-Create a verified GitHub Issue as an independently understandable Work Contract. This skill owns intake, not implementation, planning orchestration, PRD/EDD editing, or Pull Request delivery.
+Create a verified GitHub Issue as one independently deliverable and independently understandable Work Contract. This skill owns intake, not implementation, planning orchestration, PRD/EDD editing, or Pull Request delivery.
 
 ## Authority and hard stops
 
@@ -52,7 +52,7 @@ Classify exactly one type:
 - `feature`: the capability is absent or previously impossible;
 - `enhancement`: an existing capability is improved, extended, or optimized.
 
-One independently deliverable outcome normally becomes one Issue. If settled intent contains multiple independent outcomes, show a short split proposal and wait for human confirmation before multiple writes. Never split implementation steps into micro-Issues.
+One independently deliverable outcome normally becomes one Issue and is expected to be completed by one final delivery Pull Request. If the outcome cannot reasonably be delivered by one final PR, revisit the Issue boundary before writing; do not create a contract whose completion responsibility must be shared across multiple ordinary PRs. If settled intent contains multiple independent outcomes, show a short split proposal and wait for human confirmation before multiple writes. Never split implementation steps into micro-Issues or design the implementation PR while composing the contract.
 
 ## Search duplicates
 

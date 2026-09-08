@@ -92,6 +92,7 @@ async function run() {
     assert.match(calls.createComment[0].body, /Main CI passed for PR #42/);
     assert.equal(calls.update[0].issue_number, 123);
     assert.equal(calls.update[0].state, 'closed');
+    assert.equal(calls.update[0].state_reason, 'completed');
   });
 
   await test('repository wrapper localizes human-facing comments', async () => {
@@ -102,7 +103,16 @@ async function run() {
   });
 
   await test('every non-success conclusion comments and keeps the Issue open', async () => {
-    for (const conclusion of ['failure', 'cancelled', 'timed_out']) {
+    for (const conclusion of [
+      'failure',
+      'cancelled',
+      'timed_out',
+      'action_required',
+      'stale',
+      'neutral',
+      'skipped',
+      'unexpected_future_conclusion',
+    ]) {
       const { github, calls } = mockGitHub({ prs: [mergedPr(42, 'Refs #123')] });
       const result = await finalize({ github, context: contextFor({ conclusion }) });
       assert.equal(result.commentsCreated, 1);
@@ -112,6 +122,13 @@ async function run() {
       assert.match(calls.createComment[0].body, /remains open/);
       assert.match(calls.createComment[0].body, new RegExp(conclusion));
     }
+  });
+
+  await test('finalization never exposes an Issue deletion path', async () => {
+    const { github } = mockGitHub({ prs: [mergedPr(42, 'Refs #123')] });
+    assert.equal(github.rest.issues.delete, undefined);
+    assert.equal(github.rest.issues.deleteIssue, undefined);
+    await finalize({ github, context: contextFor() });
   });
 
   await test('PR CI never looks up or closes Issues', async () => {
