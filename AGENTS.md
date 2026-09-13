@@ -10,6 +10,20 @@
 - Do not merge Issue-backed work while required PR verification is failing. Merge means code entered the default branch, not that delivery is complete. Only successful Main CI for the merged commit completes the Work Contract; automation comments and closes the linked open Issue with the `completed` state reason on success, or comments and keeps it open on any non-success conclusion.
 - The default branch is accepted implementation reality, not authority to silently override PRD/EDD.
 
+## Agent startup preflight
+
+Before modifying the repository, every new task must complete a short startup preflight.
+
+- Read the applicable `AGENTS.md`, task instructions, and linked Issue / Pull Request completely; confirm scope, non-goals, and acceptance boundaries.
+- Inspect the coding capabilities actually available in the current environment, including skills, tools, MCP/plugins, and repository scripts. Follow **inspect broadly, load narrowly**: inventory capabilities first, then load/use only repository-baseline and task-relevant capabilities rather than every available skill.
+- Confirm that Git/repository workflow, implementation or editing, testing/regression, review, and CI/GitHub-state diagnosis are adequately covered for the task. Load task-specific capabilities only when needed.
+- Before editing, verify the current branch, expected base branch, worktree, dirty/uncommitted state, linked Issue / PR when applicable, and current scope. Preserve unrelated work.
+- If a capability required by the task contract is missing, unavailable, or incompatible with the environment, stop before modifying code and report the blocker. Do not silently downgrade to a workflow that clearly violates repository requirements.
+- Do not ask the user to reconfirm capabilities that are already available. Keep routine preflight internal unless it finds a blocker or material ambiguity.
+- This root `AGENTS.md` is the canonical repository policy. Vendor-specific instruction entrypoints, when needed, should point here rather than duplicate the policy.
+
+**Do not begin implementation until the startup preflight is complete.**
+
 ## 协作语言
 
 - Issue、PR、review summary、handoff 和 repository-facing status 中的人类说明，使用按以下顺序解析出的协作语言：显式仓库或用户指令 > 当前作用域的 `AGENTS.md` 政策 > 人维护的 PRD/EDD 的主要语言 > 当前已确定的人类请求。
