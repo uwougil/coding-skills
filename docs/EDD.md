@@ -35,7 +35,7 @@ The startup-preflight contract serves the same portability goal: a new agent ses
 
 ## Validation and CI
 
-The root validator checks the exact skill inventory, package structure, UTF-8/Python/JSON validity, mirror fidelity, retired-workflow absence, structured protocol manifests, and forbidden orchestration skills. Focused tests exercise bootstrap discovery and template rendering, Main CI Issue finalization with mocked GitHub APIs, Issue backend guards, cross-skill protocol invariants, portable startup-preflight invariants, and review fixture generation. CI runs the same deterministic commands on pushes and Pull Requests.
+The root validator checks the exact skill inventory, package structure, UTF-8/Python/JSON validity, mirror fidelity, retired-workflow absence, structured protocol manifests, and forbidden orchestration skills. Focused tests exercise bootstrap discovery and template rendering, Main CI Issue finalization with mocked GitHub APIs, Issue backend guards, cross-skill protocol invariants, and review fixture generation. Behavioral evaluation cases also cover the portable startup-preflight contract. CI runs the same deterministic commands on pushes and Pull Requests.
 
 The generated `issue-finalize.yml` is separate from project CI. It listens for completion of the configured CI workflow, then gates execution to `workflow_run.event == 'push'` and the repository's runtime `default_branch`. It uses `repos.listPullRequestsAssociatedWithCommit` plus exact merge SHA/base checks, parses only standalone `Refs #N` lines, rejects Pull Requests returned through the Issues API, and uses a workflow-run/attempt marker to make comments idempotent. Its least-privilege token grants `contents: read`, `pull-requests: read`, and `issues: write`.
 
