@@ -8,7 +8,7 @@ Recheck current official Codex documentation before relying on a path or feature
 
 | Mechanism | Add it when | Do not add it when |
 | --- | --- | --- |
-| `AGENTS.md` | Codex needs repository-specific setup, commands, constraints, generated-file ownership, or safety rules | The content merely repeats README usage or global policy |
+| `AGENTS.md` | Coding agents need repository-specific setup, commands, constraints, generated-file ownership, safety rules, or a portable startup-preflight contract | The content merely repeats README usage or global policy |
 | Project skill | A repository-specific workflow will recur, has several non-obvious steps, and benefits from a stable protocol or reusable resources | It is a one-off task, a short command, or generic knowledge |
 | Project MCP | Codex needs durable access to an external tool/context source and existing CLI, API, or plugin support is inadequate | A normal CLI or authenticated API is sufficient, or the integration is only speculative |
 | Plugin | A stable installable capability, existing mature integration, or bundled skill-plus-connector materially lowers maintenance cost | The need is personal, experimental, repository-only, or already covered by local tools |
@@ -41,16 +41,21 @@ Official references:
 - https://learn.chatgpt.com/docs/build-plugins
 - https://developers.openai.com/plugins/
 
-## AGENTS.md and Permissions
+## AGENTS.md, startup preflight, and permissions
 
 Keep root `AGENTS.md` concise and operational:
 
 - authoritative intent files and generated-file ownership;
+- a mandatory startup preflight before repository modification: read scoped instructions and linked work contracts, inspect capabilities available in the current agent environment, verify branch/base/worktree/dirty state and scope, and stop before editing when a required capability is unavailable;
+- the portable rule **inspect broadly, load narrowly**: capability inventory may include skills, tools, MCP/plugins, and repository scripts, but only repository-baseline and task-relevant capabilities are activated;
+- capability classes rather than vendor-specific skill names. Baseline classes normally include Git/repository workflow, implementation or editing, testing/regression, review, and CI/GitHub-state diagnosis; specialized browser, extension-host, documentation, packaging/release, or domain capabilities are conditional;
 - setup, test, lint, format, build, and type-check commands that actually work;
 - architecture boundaries that agents could otherwise violate;
 - one independently deliverable Work Contract per Issue, normally one final delivery PR per Issue, Issue-backed branch/worktree isolation, `Refs #N` linkage, reconstructible handoff evidence, required-verification merge gates, and the invariant that only Main CI success completes and closes a Work Contract;
 - secret-handling and external-mutation constraints;
 - any repository-specific completion checks.
+
+Already-available capabilities do not require human reconfirmation, and routine preflight should remain internal unless it exposes a blocker or material ambiguity. Root `AGENTS.md` is the canonical policy. If another agent platform needs a vendor-specific entrypoint to discover repository instructions, keep that file as a thin pointer to the root policy instead of copying the policy into multiple files that can drift.
 
 Use nested `AGENTS.override.md` only for a subtree with genuinely different commands or constraints. Do not encode broad machine policy or credentials in the repository.
 
