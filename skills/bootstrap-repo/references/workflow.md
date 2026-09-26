@@ -28,7 +28,7 @@ Research only facts that affect the current repository. Separate primary-source 
 2. Resolve material contradictions with the user.
 3. Select the smallest viable architecture.
 4. Create working source and meaningful tests.
-5. For every new GitHub repository, add concise README/AGENTS, CI, a lightweight `Refs #N` PR template, and the separate Main CI Issue finalizer.
+5. For every new GitHub repository, add concise README/AGENTS, CI, a lightweight `Refs #N` PR template, and the separate Main CI Issue finalizer. The generated `AGENTS.md` must include the portable startup-preflight contract from the skill entrypoint so future agents can rediscover required capabilities without bootstrap-session state.
 6. Run local validation and secret review.
 7. Initialize Git, make a focused initial commit, publish the repository, and verify CI.
 
@@ -58,7 +58,7 @@ Do not create empty or future-facing trees just to match this example.
 2. Compare PRD/EDD with accepted implementation reality and identify missing, obsolete, conflicting, or already-satisfied elements.
 3. Research only changed requirements and compatibility.
 4. Ask before semantic design changes or destructive migration.
-5. Apply the smallest coherent delta and preserve unrelated work.
+5. Apply the smallest coherent delta and preserve unrelated work. When agent infrastructure is in scope, migrate `AGENTS.md` to the canonical startup-preflight contract without overwriting repository-specific instructions or duplicating vendor-specific policy files.
 6. Run focused checks, then broader checks justified by the change.
 7. Use the existing appropriate remote; deliver repository changes through a PR when Issue-backed or cross-agent handoff benefits.
 
@@ -67,11 +67,14 @@ Do not create empty or future-facing trees just to match this example.
 Keep the project `AGENTS.md` concise, but make repository-visible handoff reconstructible. A normal later lifecycle is:
 
 ```text
-Issue → branch/worktree → implementation → commit → push → final delivery PR with Refs #N
-      → PR CI + task-local review → repair → authorized merge → Main CI
-      → success: comment + close Issue
-      → non-success: comment + keep Issue open
+new task → AGENTS startup preflight → capability check + Git/worktree/scope check
+        → Issue → branch/worktree → implementation → commit → push → final delivery PR with Refs #N
+        → PR CI + task-local review → repair → authorized merge → Main CI
+        → success: comment + close Issue
+        → non-success: comment + keep Issue open
 ```
+
+The startup preflight is repository policy, not a new orchestration layer: agents inventory the skills/tools/capabilities their current environment actually exposes, activate only baseline and task-relevant capabilities, and stop before modification if a required capability is unavailable. The policy stays portable by describing capability classes instead of vendor skill names. If a platform needs a separate instruction entrypoint, that entrypoint only points to root `AGENTS.md`.
 
 One Issue normally has one final delivery PR; multiple ordinary PRs must not share responsibility for its completion. Merge is code admission, not Work Contract completion. Agents must not use GitHub auto-close keywords in PR bodies. The host coding agent and Git/GitHub own ordinary orchestration; the small post-Main-CI finalizer owns only status feedback and closure. Do not introduce a workflow engine or manager skill.
 

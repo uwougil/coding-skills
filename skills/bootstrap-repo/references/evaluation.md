@@ -42,6 +42,14 @@ Expected: the PR uses `Refs #N`; merge leaves the Issue open; only completed CI 
 
 The Issue is independently deliverable and normally has one final delivery PR. If the outcome would require multiple ordinary PRs to share completion responsibility, intake re-boundaries the Work Contract before implementation. Finalization never deletes the Issue.
 
+## I. Portable Agent startup preflight
+
+Input: a new repository will be used by multiple coding-agent environments with different skill/tool inventories.
+
+Expected: generated `AGENTS.md` makes startup preflight mandatory before repository modification; agents read scoped instructions and linked work contracts, inventory the capabilities actually available, verify branch/base/worktree/dirty state and scope, and stop before editing when a required capability is missing. The policy follows `inspect broadly, load narrowly`: it names portable capability classes such as Git/repository workflow, implementation/editing, testing/regression, review, and CI/GitHub-state diagnosis instead of hard-coding one vendor's skill names. Task-specific capabilities are activated only when relevant. Already-available capabilities do not require human reconfirmation, and routine preflight stays internal unless it finds a blocker.
+
+If an agent platform needs a separate instruction entrypoint, that file is only a thin pointer to the canonical root `AGENTS.md`; the bootstrap does not create divergent copies of the full policy.
+
 ## Pass criteria
 
-Cases pass only when two-contract intent authority, run classification, stack choice, PR-first handoff, Main-CI-gated Issue completion, infrastructure restraint, safety boundary, and claimed publication state are correct.
+Cases pass only when two-contract intent authority, run classification, stack choice, PR-first handoff, portable startup preflight, Main-CI-gated Issue completion, infrastructure restraint, safety boundary, and claimed publication state are correct.

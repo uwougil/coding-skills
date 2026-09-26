@@ -35,6 +35,8 @@ Before composing repository-facing Issue, PR, review summary, handoff, or status
 4. Read [the detailed workflow](references/workflow.md). Preserve unrelated or uncommitted work in an existing repository.
 5. Research only stack, dependency, integration, and GitHub facts that affect the current result, using primary sources.
 
+Before mutating an existing repository, perform the repository's startup preflight if its `AGENTS.md` defines one. During a new bootstrap or explicit re-bootstrap, make that preflight part of the repository policy itself so later agents do not depend on the bootstrap session.
+
 ## Clarify only material decisions
 
 Ask only when the answer cannot be inferred safely and changes product behavior, architecture, security/privacy, ownership, repository visibility, licensing, data handling, or destructive migration. Do not ask about routine conventions already determined by the EDD or ecosystem.
@@ -55,6 +57,13 @@ Create or maintain a concise project `AGENTS.md` that establishes these invarian
 - Merge only admits code to the default branch. Main CI success for the merged commit comments on and closes linked open Issues with the `completed` state reason; every non-success conclusion comments and leaves them open.
 - PRD/EDD semantic changes require explicit human resolution.
 - Repository-facing artifacts use the resolved collaboration language and preserve technical strings verbatim.
+- Every new task performs an Agent startup preflight before repository modification. The preflight reads scoped instructions and linked work contracts, inventories the capabilities actually available in the current environment, verifies branch/base/worktree/dirty state and scope, and blocks implementation when a required capability is unavailable.
+- The startup rule follows **inspect broadly, load narrowly**: consider all available coding capabilities, then load/use only repository-baseline and task-relevant skills/tools. Do not require every available skill to be activated merely to satisfy the checklist.
+- Capability requirements are described by portable capability classes rather than hard-coded vendor skill names. Baseline classes normally include Git/repository workflow, implementation or editing, testing/regression, review, and CI/GitHub-state diagnosis; browser automation, extension-host integration, documentation maintenance, packaging/release, or other specialized capabilities are enabled only when the task needs them.
+- Agents do not ask humans to reconfirm capabilities that are already available, and routine preflight remains internal unless it discovers a blocker or material ambiguity.
+- Root `AGENTS.md` is the canonical repository Agent policy. If a particular agent platform needs a separate instruction entrypoint to discover repository guidance, keep that entrypoint as a thin pointer to `AGENTS.md` rather than duplicating the full policy.
+
+The generated or migrated policy must make the gate explicit: **Do not begin implementation until the startup preflight is complete.**
 
 For every new GitHub repository bootstrap, add a lightweight PR template with non-closing Issue linkage, change summary, verification evidence, and PRD/EDD impact, plus the separate Main CI finalization workflow. Read [Main CI Issue finalization](references/issue-finalization.md) and adapt the bundled assets to the repository. An existing repository receives these files only through an explicit re-bootstrap migration. Do not turn the template into a bureaucratic checklist or couple Issue lifecycle code into the project's test jobs.
 
@@ -72,4 +81,4 @@ Completion requires actual setup/build/test quality gates, CI parity, secret rev
 
 ## Maintain the skill
 
-When changing this protocol, use [the evaluation cases](references/evaluation.md). Preserve the two-contract intent model, PR-first cross-agent handoff, minimal infrastructure, non-destructive re-bootstrap, and honest publication claims.
+When changing this protocol, use [the evaluation cases](references/evaluation.md). Preserve the two-contract intent model, PR-first cross-agent handoff, portable startup preflight, minimal infrastructure, non-destructive re-bootstrap, and honest publication claims.
